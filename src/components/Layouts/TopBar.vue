@@ -5,24 +5,125 @@
             <p>EasyTrip</p>
         </div>
         <div class="r-content">
-            <div class="input-content">
-                <input type="text" placeholder="Куда вы собираетесь поехать?">
+            <div class="input-content dropdown-wrapper">
+                <input 
+                    type="text" 
+                    placeholder="Куда вы собираетесь поехать?"
+                    v-model="searchQuery"
+                    @focus="showDropdown = true"
+                />
                 <button>
                     <img src="/src/assets/images/icon/Search.svg" alt="">
                 </button>
+                
+                <ul v-if="showDropdown" class="dropdown">
+                    <li v-for="option in filteredOptions" :key="option.id" @click="selectOption(option)">
+                        {{ option.trip_name }} ({{ option.country_name }})
+                    </li>
+                </ul>
             </div>
             <p>О проекте •</p>
-            <P>Меню •</P>
+            <p>Меню •</p>
             <p id="auth">Войти</p>
         </div>
     </div>
 </template>
 
-<script setup>
 
+
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import axios from 'axios';
+import { API_URL } from '@/config';
+
+const countries = ref([]);
+const searchQuery = ref('');
+const showDropdown = ref(false);
+
+const getCountries = async () => {
+    try {
+        const response = await axios.get(API_URL + "/country/all");
+        countries.value = response.data;
+    } catch (error) {
+        console.error("Ошибка загрузки данных:", error);
+    }
+};
+
+onMounted(() => {
+    getCountries();
+    document.addEventListener('click', closeDropdown);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', closeDropdown);
+});
+
+const filteredOptions = computed(() => {
+    if (!searchQuery.value) return countries.value;
+    return countries.value.filter(item =>
+        item.country_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.city_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        item.trip_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
+
+const selectOption = (option) => {
+    searchQuery.value = option.trip_name;
+    showDropdown.value = false;
+};
+
+const closeDropdown = (event) => {
+    if (!event.target.closest('.dropdown-wrapper')) {
+        showDropdown.value = false;
+    }
+};
 </script>
 
+
 <style scoped>
+.dropdown-wrapper {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 5px 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.dropdown li:hover {
+    background: #f5f5f5;
+}
+
+.dropdown::-webkit-scrollbar {
+    width: 6px; 
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background-color: #02BF8C;
+    border-radius: 10px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
 .container {
     display: flex;
     justify-content: space-between;
@@ -100,5 +201,6 @@
 
 #auth {
     margin-left: 10%;
+    color: #007b5b;
 }
 </style>
