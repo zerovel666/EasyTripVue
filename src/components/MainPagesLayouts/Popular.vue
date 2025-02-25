@@ -65,7 +65,7 @@ h2 {
 .card {
     position: relative;
     height: 400px;
-    width: 350px;
+    width: 100%;
     border: 1px solid #02BF8C;
     margin: 0 auto;
     border-radius: 35px;

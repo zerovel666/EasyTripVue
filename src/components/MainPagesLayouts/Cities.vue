@@ -11,7 +11,6 @@
                     <p>{{ city.country_name }}</p>
                     <p class="count_trip">{{ city.count_trip }} городов для посещения</p>
                 </div>
-                <div class="line"></div>
             </div>
         </div>
     </div>
@@ -48,45 +47,36 @@ onMounted(getCities);
 }
 .card{
     position: relative;
-    height: 300px;
-    width: 300px;
+    height: 400px;
+    width: 100%;
     border: 1px solid #02BF8C;
     margin: 0 auto;
     border-radius: 35px;
     overflow: hidden;
     background-size: cover;
     background-position: center;
-    justify-content: center;
-    display: flex;
 }
 .card_infos {
-    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     background: rgba(0, 0, 0, 0.6);
     color: white;
-    border-radius: 0 0 15px 15px;
+    border-radius: 15px;
     padding: 15px; 
     box-sizing: border-box; 
     transform: translateY(-100%);
     transition: transform 0.3s ease;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+ 
 }
-.line{
-    position: absolute;
-    width: 30%;
-    border: 1px solid #004835;
-    margin-top: 10px;
-    height: 0.5px;
-    background-color: #02BF8C;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
-}
-.card:hover .card_infos{
+
+.card:hover .card_infos {
     transform: translateY(0);
-}
-.card:hover .line {
-    transform: translateY(3500%);
 }
 
 .card:hover .card_infos {
@@ -96,9 +86,10 @@ onMounted(getCities);
 .card_infos p {
     margin: 0;
     text-align: center;
+    font-size: 42px;
 }
 .card_infos .count_trip {
-    font-size: 15px;
+    font-size: 20px;
 }
 
 @media (min-width: 768px) {
