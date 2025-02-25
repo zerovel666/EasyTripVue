@@ -197,7 +197,7 @@ const closeDropdown = (event) => {
 }
 
 #auth {
-    margin-left: 10%;
+    margin-left: 9%;
     color: #007b5b;
 }
 </style>
