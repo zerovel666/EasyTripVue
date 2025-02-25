@@ -2,7 +2,7 @@
     <div class="container">
         <h2>Исследуй мир с EasyTrip</h2>
         <p>
-            Погрузись в увлекательное путешествие по 627 городам вместе с EasyTrip! Открой для себя новые места, окунись
+            Погрузись в увлекательное путешествие по {{countTrip}} городам вместе с EasyTrip! Открой для себя новые места, окунись
             в
             атмосферу удивительных культур и создай незабываемые воспоминания. Мир ждет тебя – отправляйся в дорогу!
         </p>
@@ -20,15 +20,17 @@
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref,defineEmits } from 'vue';
 
 const cities = ref([]);
 const countTrip = ref(null)
+const emit = defineEmits(['updateCountTrip']);
 const getCities = async () => {
     const response = await axios.get(API_URL + "/country/countByname");
     cities.value = response.data;
 
     countTrip.value = response.data.reduce((sum, element) => sum + element.count_trip, 0);
+    emit('updateCountTrip', countTrip.value);
 };
 
 onMounted(getCities);

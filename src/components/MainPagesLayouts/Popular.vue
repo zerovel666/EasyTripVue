@@ -15,13 +15,21 @@
                 </div>
             </div>
         </div>
+        <div id="buttonCont">
+            <button>Посмотреть все туры</button>
+            <p v-if="countTrip">{{ countTrip }} городов</p>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref,defineProps } from 'vue';       
+
+const props = defineProps({
+    countTrip: Object, 
+});
 
 const cardInfos = ref([]);
 
@@ -128,5 +136,27 @@ p{
 .rating img{
     width: 15px;
     margin-left: 3px;
+}
+#buttonCont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    flex-direction: column;
+}
+#buttonCont button{
+    width: 25%;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: #02BF8C;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease; 
+    cursor: pointer;    
+}
+#buttonCont button:hover {
+    transform: scale(1.05); 
 }
 </style>
