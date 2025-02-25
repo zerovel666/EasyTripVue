@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <h2>Исследуй мир с EasyTrip</h2>
         <p>
             Погрузись в увлекательное путешествие по 627 городам вместе с EasyTrip! Открой для себя новые места, окунись
             в
@@ -34,10 +35,13 @@ onMounted(getCities);
 </script>
 
 <style scoped>
+h2{
+    text-align: center;
+    margin: 20px 0 0 0;
+}
 .container p{
     text-align: center;
     font-size: 22px;
-    margin-top: 50px;
 }
 .content{
     display: grid;
