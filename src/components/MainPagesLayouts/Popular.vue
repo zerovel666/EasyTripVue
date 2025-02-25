@@ -4,7 +4,13 @@
         <div class="cards">
             <div class="card" v-for="(card, index) in cardInfos" :key="index" :style="{ backgroundImage: `url(${card.image_path})` }">
                 <div class="card-info">
-                    <p>{{ card.trip_name }}</p>
+                    <div class="head_card_item">
+                        <p>{{ card.trip_name }}</p>
+                        <div class="rating">
+                            {{ card.description_country.rating }}
+                            <img src="/src/assets/images/icon/Star.svg" alt="">
+                        </div>
+                    </div>
                     <p class="preview_text">{{ card.description_country.preview }}</p>
                 </div>
             </div>
@@ -105,5 +111,22 @@ p{
 }
 .preview_text{
     font-size: 14px;
+}
+.head_card_item{
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.rating{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rating img{
+    width: 15px;
+    margin-left: 3px;
 }
 </style>
