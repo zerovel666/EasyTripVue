@@ -6,6 +6,7 @@ import Cities from '@/components/MainPagesLayouts/Cities.vue';
 import InfoTrip from '@/components/MainPagesLayouts/InfoTrip.vue';
 import Popular from '@/components/MainPagesLayouts/Popular.vue';
 import TripDetails from '@/components/MainPagesLayouts/TripDetails.vue';
+import Footer from '@/components/Layouts/Footer.vue';
 
 const countTrip = ref(null);
 
@@ -21,10 +22,9 @@ const updateCountTrip = (data) => {
     <InfoTrip />
     <Cities @updateCountTrip="updateCountTrip" />
     <TripDetails />
+    <Footer />
 </template>
 
 <style>
-body{
-    height: 10000px;
-}
+
 </style>
