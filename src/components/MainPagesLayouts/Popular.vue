@@ -76,7 +76,7 @@ h2 {
     width: 100%;
     border: 1px solid #02BF8C;
     margin: 0 auto;
-    border-radius: 35px;
+    border-radius: 10px;
     overflow: hidden;
     background-size: cover;
     background-position: center;
@@ -108,7 +108,6 @@ h2 {
     color: white;
     padding: 10px;
     transition: bottom 0.3s ease-in-out;
-    border-radius: 0 0 35px 35px;
     cursor: pointer;
 }
 p{

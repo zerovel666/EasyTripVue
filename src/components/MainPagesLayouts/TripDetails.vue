@@ -52,7 +52,7 @@ h2 {
     margin-top: 30px;
     background: linear-gradient(45deg, blue, #02BF8C 60%);
     box-sizing: border-box;
-    border-radius: 20px;
+    border-radius: 10px;
     color: white;
     padding: 30px;
 }
@@ -79,7 +79,7 @@ h2 {
 
 .content img {
     width: 40%;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 .content p {

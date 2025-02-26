@@ -71,7 +71,7 @@ h2{
     width: 100%;
     border: 1px solid #02BF8C;
     margin: 0 auto;
-    border-radius: 35px;
+    border-radius: 10px;
     overflow: hidden;
     background-size: cover;
     background-position: center;
@@ -82,7 +82,6 @@ h2{
     width: 100%;
     background: rgba(0, 0, 0, 0.6);
     color: white;
-    border-radius: 15px;
     padding: 15px; 
     box-sizing: border-box; 
     transform: translateY(-100%);
