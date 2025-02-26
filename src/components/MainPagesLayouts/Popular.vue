@@ -91,7 +91,7 @@ h2 {
     height: 100%;
     background: rgba(0, 0, 0, 0);
     transition: background 0.3s ease;
-    border-radius: px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
