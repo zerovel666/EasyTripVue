@@ -5,6 +5,7 @@ import Banner from '@/components/MainPagesLayouts/Banner.vue';
 import Cities from '@/components/MainPagesLayouts/Cities.vue';
 import InfoTrip from '@/components/MainPagesLayouts/InfoTrip.vue';
 import Popular from '@/components/MainPagesLayouts/Popular.vue';
+import TripDetails from '@/components/MainPagesLayouts/TripDetails.vue';
 
 const countTrip = ref(null);
 
@@ -19,6 +20,7 @@ const updateCountTrip = (data) => {
     <Popular :countTrip="countTrip" />
     <InfoTrip />
     <Cities @updateCountTrip="updateCountTrip" />
+    <TripDetails />
 </template>
 
 <style>

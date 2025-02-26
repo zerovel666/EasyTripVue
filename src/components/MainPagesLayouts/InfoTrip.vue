@@ -37,7 +37,7 @@
     position: relative;
     height: 300px;
     width: 100%;
-    background-image: url('/src/assets/images/viewMainBlock/viewBlock.png');
+    background-image: url('/src/assets/images/MainImages/viewBlock.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -99,6 +99,6 @@
     padding: 40px;
 }
 .lineContent h3{
-    color: rgb(0, 242, 255);
+    color: #00f2ff;
 }
 </style>
