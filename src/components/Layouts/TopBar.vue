@@ -77,49 +77,49 @@ const closeDropdown = (event) => {
 
 
 <style scoped>
-    .dropdown-wrapper {
-        position: relative;
-    }
+.dropdown-wrapper {
+    position: relative;
+}
 
-    .dropdown {
-        position: absolute;
-        top: 40px;
-        left: 0;
-        width: 100%;
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        max-height: 200px;
-        overflow-y: auto;
-        list-style: none;
-        padding: 5px 0;
-        z-index: 1000;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
+.dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 5px 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-    .dropdown li {
-        padding: 10px;
-        cursor: pointer;
-        transition: background 0.2s ease-in-out;
-    }
+.dropdown li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
 
-    .dropdown li:hover {
-        background: #f5f5f5;
-    }
+.dropdown li:hover {
+    background: #f5f5f5;
+}
 
-    .dropdown::-webkit-scrollbar {
-        width: 6px;
-    }
+.dropdown::-webkit-scrollbar {
+    width: 6px;
+}
 
-    .dropdown::-webkit-scrollbar-thumb {
-        background-color: #02BF8C;
-        border-radius: 10px;
-    }
+.dropdown::-webkit-scrollbar-thumb {
+    background-color: #02BF8C;
+    border-radius: 10px;
+}
 
-    .dropdown::-webkit-scrollbar-track {
-        background: #f0f0f0;
-        border-radius: 10px;
-    }
+.dropdown::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
 
 .container {
     display: flex;

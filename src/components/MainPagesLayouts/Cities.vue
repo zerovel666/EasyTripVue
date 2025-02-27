@@ -7,10 +7,8 @@
             Мир ждет тебя – отправляйся в дорогу!
         </p>
         <div class="content">
-            <div class="card" 
-                 v-for="(city, index) in visibleCities" 
-                 :key="index" 
-                 :style="{ backgroundImage: `url(${city.image_path})` }">
+            <div class="card" v-for="(city, index) in visibleCities" :key="index"
+                :style="{ backgroundImage: `url(${city.image_path})` }">
                 <div class="card_infos">
                     <p>{{ city.country_name }}</p>
                     <p class="count_trip">{{ city.count_trip }} городов для посещения</p>
@@ -51,21 +49,24 @@ onMounted(getCities);
 
 
 <style scoped>
-h2{
+h2 {
     text-align: center;
     margin: 20px 0 0 0;
 }
-.container p{
+
+.container p {
     text-align: center;
     font-size: 22px;
 }
-.content{
+
+.content {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(1, 1fr);
     justify-content: center;
 }
-.card{
+
+.card {
     position: relative;
     height: 400px;
     width: 100%;
@@ -75,14 +76,15 @@ h2{
     background-size: cover;
     background-position: center;
 }
+
 .card_infos {
     top: 0;
     left: 0;
     width: 100%;
     background: rgba(0, 0, 0, 0.6);
     color: white;
-    padding: 15px; 
-    box-sizing: border-box; 
+    padding: 15px;
+    box-sizing: border-box;
     transform: translateY(-100%);
     transition: transform 0.3s ease;
     height: 100%;
@@ -90,7 +92,7 @@ h2{
     justify-content: center;
     align-items: center;
     flex-direction: column;
- 
+
 }
 
 .card:hover .card_infos {
@@ -98,7 +100,7 @@ h2{
 }
 
 .card:hover .card_infos {
-    top:0;
+    top: 0;
 }
 
 .card_infos p {
@@ -106,30 +108,32 @@ h2{
     text-align: center;
     font-size: 42px;
 }
+
 .card_infos .count_trip {
     font-size: 20px;
 }
 
 @media (min-width: 768px) {
-    .content { 
+    .content {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
-    .content { 
+    .content {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-#buttonCont{
+#buttonCont {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 30px;
     flex-direction: column;
 }
-#buttonCont button{
+
+#buttonCont button {
     width: 25%;
     height: 50px;
     font-size: 20px;
@@ -138,11 +142,11 @@ h2{
     background-color: #02BF8C;
     color: white;
     cursor: pointer;
-    transition: transform 0.3s ease; 
-    cursor: pointer;    
-}
-#buttonCont button:hover {
-    transform: scale(1.05); 
+    transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
+#buttonCont button:hover {
+    transform: scale(1.05);
+}
 </style>

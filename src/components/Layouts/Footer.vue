@@ -78,9 +78,10 @@ const hoverTelegram = ref(false);
 </script>
 
 <style scoped>
-footer{
+footer {
     margin-bottom: 20px;
 }
+
 .content {
     display: flex;
 }
@@ -104,13 +105,16 @@ h3 {
     width: 60px;
     height: 60px;
 }
-.payCards{
+
+.payCards {
     display: flex;
     gap: 20px;
 }
-.payCards img{
+
+.payCards img {
     width: 40px;
 }
+
 .l-content {
     width: 50%;
     display: flex;
@@ -129,19 +133,23 @@ h3 {
     cursor: pointer;
     outline: none;
 }
-.bottom-l-content p{
+
+.bottom-l-content p {
     cursor: pointer;
 }
+
 .r-content {
     display: flex;
     justify-content: center;
     gap: 30px;
     width: 50%;
 }
-#legal-info{
+
+#legal-info {
     font-size: 13px;
 }
-.l-block{
+
+.l-block {
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -149,14 +157,17 @@ h3 {
     display: flex;
     flex-direction: column;
 }
-.r-block{
+
+.r-block {
     display: flex;
     flex-direction: column;
 }
-.l-block p{
+
+.l-block p {
     cursor: pointer;
 }
-.r-block p{
+
+.r-block p {
     cursor: pointer;
 }
 </style>

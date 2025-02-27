@@ -25,6 +25,4 @@ const updateCountTrip = (data) => {
     <Footer />
 </template>
 
-<style>
-
-</style>
+<style></style>

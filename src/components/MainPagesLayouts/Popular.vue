@@ -2,7 +2,8 @@
     <div class="container">
         <h2>Популярное</h2>
         <div class="cards">
-            <div class="card" v-for="(card, index) in cardInfos" :key="index" :style="{ backgroundImage: `url(${card.image_path})` }">
+            <div class="card" v-for="(card, index) in cardInfos" :key="index"
+                :style="{ backgroundImage: `url(${card.image_path})` }">
                 <div class="card-info">
                     <div class="head_card_item">
                         <p>{{ card.trip_name }}</p>
@@ -25,10 +26,10 @@
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { onMounted, ref,defineProps } from 'vue';       
+import { onMounted, ref, defineProps } from 'vue';
 
 const props = defineProps({
-    countTrip: Object, 
+    countTrip: Object,
 });
 
 const cardInfos = ref([]);
@@ -109,16 +110,20 @@ h2 {
     transition: bottom 0.3s ease-in-out;
     cursor: pointer;
 }
-p{
+
+p {
     margin: 10px;
 }
+
 .card:hover .card-info {
     bottom: 0;
 }
-.preview_text{
+
+.preview_text {
     font-size: 14px;
 }
-.head_card_item{
+
+.head_card_item {
     height: 20px;
     display: flex;
     justify-content: space-between;
@@ -126,23 +131,26 @@ p{
     text-align: center;
 }
 
-.rating{
+.rating {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.rating img{
+
+.rating img {
     width: 15px;
     margin-left: 3px;
 }
-#buttonCont{
+
+#buttonCont {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 30px;
     flex-direction: column;
 }
-#buttonCont button{
+
+#buttonCont button {
     width: 25%;
     height: 50px;
     font-size: 20px;
@@ -151,10 +159,11 @@ p{
     background-color: #02BF8C;
     color: white;
     cursor: pointer;
-    transition: transform 0.3s ease; 
-    cursor: pointer;    
+    transition: transform 0.3s ease;
+    cursor: pointer;
 }
+
 #buttonCont button:hover {
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 </style>

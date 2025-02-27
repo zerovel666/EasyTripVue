@@ -47,13 +47,13 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between; 
-    gap: 5%; 
+    justify-content: space-between;
+    gap: 5%;
 }
 
 .textLineContent {
     text-align: center;
-    flex: 1; 
+    flex: 1;
 }
 
 
@@ -117,7 +117,7 @@
     text-align: center;
 }
 
-.lineContent h3{
+.lineContent h3 {
     color: #00f2ff;
-} 
+}
 </style>
