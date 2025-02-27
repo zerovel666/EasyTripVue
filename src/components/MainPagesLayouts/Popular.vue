@@ -29,7 +29,7 @@ import axios from 'axios';
 import { onMounted, ref, defineProps } from 'vue';
 
 const props = defineProps({
-    countTrip: Object,
+    countTrip: Number,
 });
 
 const cardInfos = ref([]);

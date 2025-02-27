@@ -31,7 +31,9 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import { API_URL } from '@/config';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const countries = ref([]);
 const searchQuery = ref('');
 const showDropdown = ref(false);
@@ -65,6 +67,7 @@ const filteredOptions = computed(() => {
 
 const selectOption = (option) => {
     searchQuery.value = option.trip_name;
+    router.push('/trip' + `/${option.trip_name}`);
     showDropdown.value = false;
 };
 
@@ -134,16 +137,18 @@ const closeDropdown = (event) => {
     align-items: center;
     width: 35%;
     height: 70px;
-    cursor: pointer;
 }
 
 .content-logo p {
     font-size: 30px;
     margin-left: 5px;
+    cursor: pointer;
+
 }
 
 #logo {
     height: 50px;
+    cursor: pointer;
 }
 
 .r-content {
@@ -152,6 +157,7 @@ const closeDropdown = (event) => {
     align-items: center;
     height: 70px;
     width: 75%;
+
 }
 
 .r-content p {
