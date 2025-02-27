@@ -6,7 +6,7 @@
     >
         <div class="overlay">
             <div class="container">
-                <h1>{{ tripInfo.description_country.description }}</h1>
+                <h1>{{ tripInfo.description_country.title }}</h1>
                 <p>{{ tripInfo.description_country.preview}}</p>
             </div>
         </div>
@@ -34,7 +34,7 @@ defineProps({ tripInfo: Object });
     height: 100%;
     background: rgba(0, 0, 0, 0.5); 
     transition: background 0.3s ease;
-    padding: 30px;
+    padding: 10px;
     box-sizing: border-box;
 }
 .container{
