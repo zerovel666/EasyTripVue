@@ -134,6 +134,7 @@ h3 {
 }
 .r-content {
     display: flex;
+    justify-content: center;
     gap: 30px;
     width: 50%;
 }
@@ -145,9 +146,12 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 40px;
+    display: flex;
+    flex-direction: column;
 }
 .r-block{
-    width: 50%;
+    display: flex;
+    flex-direction: column;
 }
 .l-block p{
     cursor: pointer;

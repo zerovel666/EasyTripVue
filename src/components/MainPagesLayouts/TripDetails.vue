@@ -43,20 +43,6 @@
 h2 {
     text-align: center;
 }
-
-.content {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 30px;
-    margin-top: 30px;
-    background: linear-gradient(45deg, blue, #02BF8C 60%);
-    box-sizing: border-box;
-    border-radius: 10px;
-    color: white;
-    padding: 30px;
-}
-
 @keyframes gradientAnimation {
     0% {
         background-position: 0% 50%;
@@ -70,12 +56,24 @@ h2 {
         background-position: 0% 50%;
     }
 }
-
 .content {
-    background: linear-gradient(45deg, rgb(56, 56, 255), #02BF8C 60%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 30px;
+    margin-top: 30px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    color: rgb(0, 0, 0);
+    padding: 30px;
+    background: linear-gradient(25deg, rgb(198, 198, 198), #ffffff 60%);
     background-size: 200% 200%;
     animation: gradientAnimation 6s ease infinite;
 }
+
+
+
+
 
 .content img {
     width: 40%;

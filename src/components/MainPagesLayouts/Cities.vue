@@ -69,7 +69,6 @@ h2{
     position: relative;
     height: 400px;
     width: 100%;
-    border: 1px solid #02BF8C;
     margin: 0 auto;
     border-radius: 10px;
     overflow: hidden;
