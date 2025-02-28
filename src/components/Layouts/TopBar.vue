@@ -67,6 +67,7 @@ const filteredOptions = computed(() => {
 
 const selectOption = (option) => {
     searchQuery.value = option.trip_name;
+    router.push(`/filter/${encodeURIComponent(option.trip_name)}`);
     showDropdown.value = false;
 };
 
