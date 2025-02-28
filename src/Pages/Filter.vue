@@ -70,20 +70,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import axios from 'axios';
 import TopBar from '@/components/Layouts/TopBar.vue';
 import { API_URL } from '@/config';
 import Notification from '@/components/Layouts/Notification.vue';
 
+const route = useRoute();
 const trips = ref([]);
 const filteredTrips = ref([]);
 const activeIndex = ref(null);
 const isFilterOpen = ref(false);
-const filterRef = ref(null);
 const notificationMessage = ref('');
 
 const filters = ref({
+    tripName: '',
     rating: null,
     country: '',
     city: '',
@@ -94,9 +96,48 @@ const filters = ref({
 const getAllTrips = async () => {
     const response = await axios.get(API_URL + '/country/all');
     trips.value = response.data;
-    filteredTrips.value = response.data; 
+    filteredTrips.value = response.data;
+    
+    if (route.params.trip_name) {
+        filters.value.tripName = route.params.trip_name;
+        applyFilters();
+    }
 };
+
 onMounted(getAllTrips);
+
+watch(() => route.params.trip_name, (newTripName) => {
+    if (newTripName) {
+        filters.value.tripName = newTripName;
+        applyFilters();
+    } else {
+        resetFilters();
+    }
+});
+
+
+const applyFilters = () => {
+    filteredTrips.value = trips.value.filter(trip => {
+        return (
+            (!filters.value.tripName || trip.trip_name.toLowerCase().includes(filters.value.tripName.toLowerCase())) &&
+            (!filters.value.rating || trip.description_country.rating >= filters.value.rating) &&
+            (!filters.value.country || trip.country_name.toLowerCase().includes(filters.value.country.toLowerCase())) &&
+            (!filters.value.city || trip.city_name.toLowerCase().includes(filters.value.city.toLowerCase())) &&
+            (!filters.value.minPrice || trip.price_per_day >= filters.value.minPrice) &&
+            (!filters.value.maxPrice || trip.price_per_day <= filters.value.maxPrice)
+        );
+    });
+
+    if (filteredTrips.value.length === 0) {
+        notificationMessage.value = "По вашему запросу ничего не найдено.";
+        resetFilters();
+        setTimeout(() => {
+            notificationMessage.value = '';
+        }, 3000);
+    }
+
+    isFilterOpen.value = false;
+};
 
 const toggleCardInfo = (index) => {
     activeIndex.value = activeIndex.value === index ? null : index;
@@ -124,46 +165,22 @@ onUnmounted(() => {
     document.removeEventListener('click', closeFilterOnClickOutside);
 });
 
-const applyFilters = () => {
-    filteredTrips.value = trips.value.filter(trip => {
-        return (
-            (!filters.value.rating || trip.description_country.rating >= filters.value.rating) &&
-            (!filters.value.country || trip.country_name.toLowerCase().includes(filters.value.country.toLowerCase())) &&
-            (!filters.value.city || trip.city_name.toLowerCase().includes(filters.value.city.toLowerCase())) &&
-            (!filters.value.minPrice || trip.price_per_day >= filters.value.minPrice) &&
-            (!filters.value.maxPrice || trip.price_per_day <= filters.value.maxPrice)
-        );
-    });
-
-    if (filteredTrips.value.length === 0) {
-        notificationMessage.value = "По вашему запросу ничего не найдено.";
-        resetFilters();
-        setTimeout(() => {
-            notificationMessage.value = '';
-        }, 3000);
-    }
-
-    isFilterOpen.value = false; 
-};
-
 const resetFilters = () => {
     filters.value = {
+        tripName: '',
         rating: null,
         country: '',
         city: '',
         minPrice: null,
         maxPrice: null,
     };
-    filteredTrips.value = [...trips.value]; 
+    filteredTrips.value = [...trips.value];
 };
 
 const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 };
 </script>
-
-
-
 
 <style scoped>
 .trip {

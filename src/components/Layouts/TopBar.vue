@@ -7,8 +7,8 @@
         <div class="r-content">
             <div class="input-content dropdown-wrapper">
                 <input type="text" placeholder="Куда вы собираетесь поехать?" v-model="searchQuery"
-                    @focus="showDropdown = true" />
-                <button>
+                    @focus="showDropdown = true" @click="searchQuery = ''"/>
+                <button @click="searchTrip">
                     <img src="/src/assets/images/icon/Search.svg" alt="">
                 </button>
 
@@ -24,8 +24,6 @@
         </div>
     </div>
 </template>
-
-
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
@@ -76,6 +74,11 @@ const closeDropdown = (event) => {
         showDropdown.value = false;
     }
 };
+const searchTrip = () => {
+    const query = searchQuery.value.trim();
+    router.push(query ? `/filter/${encodeURIComponent(query)}` : '/filter');
+};
+
 </script>
 
 

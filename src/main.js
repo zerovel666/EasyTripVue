@@ -8,7 +8,7 @@ import Filter from './Pages/Filter.vue'
 
 const routes = [
     { path: '/', component: Main },
-    { path: '/filter/:trip_name', component: Filter}
+    { path: '/filter/:trip_name?', component: Filter }
 ]
 
 const router = createRouter({
