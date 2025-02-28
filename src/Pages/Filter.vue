@@ -131,8 +131,27 @@ const applyFilters = () => {
             (!filters.value.maxPrice || trip.price_per_day <= filters.value.maxPrice)
         );
     });
+
+    if (filteredTrips.value.length === 0) {
+        alert("По вашему запросу ничего не найдено.");
+        resetFilters();
+    }
+
     isFilterOpen.value = false; 
 };
+
+const resetFilters = () => {
+    filters.value = {
+        rating: null,
+        country: '',
+        city: '',
+        minPrice: null,
+        maxPrice: null,
+    };
+    filteredTrips.value = [...trips.value]; 
+};
+
+
 
 const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
