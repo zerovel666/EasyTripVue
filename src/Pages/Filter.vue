@@ -1,5 +1,6 @@
 <template>
     <TopBar />
+    <Notification :message="notificationMessage" />
     <div class="iconPages">
         <div id="scrollTop" @click="scrollToTop">
             <img src="/src/assets/images/icon/filter/scrollTop.svg" alt="">
@@ -73,12 +74,14 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import TopBar from '@/components/Layouts/TopBar.vue';
 import { API_URL } from '@/config';
+import Notification from '@/components/Layouts/Notification.vue';
 
 const trips = ref([]);
-const filteredTrips = ref([]); 
+const filteredTrips = ref([]);
 const activeIndex = ref(null);
 const isFilterOpen = ref(false);
 const filterRef = ref(null);
+const notificationMessage = ref('');
 
 const filters = ref({
     rating: null,
@@ -133,8 +136,11 @@ const applyFilters = () => {
     });
 
     if (filteredTrips.value.length === 0) {
-        alert("По вашему запросу ничего не найдено.");
+        notificationMessage.value = "По вашему запросу ничего не найдено.";
         resetFilters();
+        setTimeout(() => {
+            notificationMessage.value = '';
+        }, 3000);
     }
 
     isFilterOpen.value = false; 
@@ -151,12 +157,11 @@ const resetFilters = () => {
     filteredTrips.value = [...trips.value]; 
 };
 
-
-
 const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 };
 </script>
+
 
 
 
