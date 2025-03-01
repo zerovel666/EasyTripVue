@@ -3,8 +3,7 @@
         <div class="child-modal-content" @click.stop>
             <h2>Дочерняя модалка</h2>
             <p>Тут контент...</p>
-            <button @click="$emit('close')">Закрыть</button>
-        </div>
+            <button @click="$emit('close')">Закрыть</button>        </div>
     </div>
 </template>
 
@@ -12,7 +11,8 @@
 <script setup>
 import { watch, onUnmounted } from 'vue';
 
-const props = defineProps({ isOpen: Boolean });
+const props = defineProps({ isOpen: Boolean ,  selectedTrip: Object
+});
 
 watch(
     () => props.isOpen,

@@ -61,7 +61,7 @@
                                     <li>{{ tag.tag }}</li>
                                 </ul>
                                 <p>Цена за день — {{ trip.price_per_day }} {{ trip.currency }}</p>
-                                <button @click="openModal">Забронировать</button>
+                                <button @click="openModal(trip)">Забронировать</button>
                             </div>
                         </div>
 
@@ -71,7 +71,8 @@
         </div>
         <Footer />
     </div>
-    <ModalBuy :isOpen="isModalOpen" @close="isModalOpen = false" />
+    <ModalBuy    :selectedTrip="selectedTrip"  
+    :isOpen="isModalOpen" @close="isModalOpen = false" />
 
 </template>
 
@@ -92,8 +93,13 @@ const activeIndex = ref(null);
 const isFilterOpen = ref(false);
 const notificationMessage = ref('');
 const isModalOpen = ref(false);
+const selectedTrip = ref(null);
 
-const openModal = () => isModalOpen.value = true;
+const openModal = (trip) => {
+    isModalOpen.value = true;
+    selectedTrip.value = trip;
+};
+;
 const closeModal = () => isModalOpen.value = false;
 
 const filters = ref({
