@@ -1,5 +1,6 @@
 <template>
-    <div class="bodyIfOpenModal" :style="{ pointerEvents: isModalOpen ? 'none' : 'auto', overflow: isModalOpen ? 'hidden' : 'auto'}">
+    <div class="bodyIfOpenModal"
+        :style="{ pointerEvents: isModalOpen ? 'none' : 'auto', overflow: isModalOpen ? 'hidden' : 'auto' }">
         <TopBar />
         <Notification :message="notificationMessage" />
         <div class="iconPages">
@@ -71,8 +72,7 @@
         </div>
         <Footer />
     </div>
-    <ModalBuy    :selectedTrip="selectedTrip"  
-    :isOpen="isModalOpen" @close="isModalOpen = false" />
+    <ModalBuy :selectedTrip="selectedTrip" :isOpen="isModalOpen" @close="isModalOpen = false" />
 
 </template>
 
