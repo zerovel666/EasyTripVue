@@ -10,7 +10,7 @@
         <div class="input-content dropdown-wrapper">
             <input type="text" placeholder="Куда вы собираетесь поехать?" v-model="searchQuery"
                 @focus="showDropdown = true" />
-            <button>
+            <button @click="searchTrip">
                 <img src="/src/assets/images/icon/Search.svg" alt="">
             </button>
 
@@ -29,10 +29,12 @@ import 'vue3-carousel/dist/carousel.css';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import { API_URL } from '@/config';
+import { useRouter } from 'vue-router';
 
 const countries = ref([]);
 const searchQuery = ref('');
 const showDropdown = ref(false);
+const router = useRouter();
 
 const banners = ref([
     { image: "/src/assets/images/banner/banner.svg", text: "Путешествуйте по миру!" },
@@ -70,7 +72,13 @@ const filteredOptions = computed(() => {
 const selectOption = (option) => {
     searchQuery.value = option.trip_name;
     showDropdown.value = false;
+    router.push(`/filter/${encodeURIComponent(option.trip_name)}`);
 };
+const searchTrip = () => {
+    const query = searchQuery.value.trim();
+    router.push(query ? `/filter/${encodeURIComponent(query)}` : '/filter');
+};
+
 
 const closeDropdown = (event) => {
     if (!event.target.closest('.dropdown-wrapper')) {

@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <div class="content-logo">
-            <img src="/src/assets/images/icon/Logo.svg" alt="" id="logo">
-            <p>EasyTrip</p>
+            <img src="/src/assets/images/icon/Logo.svg" alt="" id="logo" @click="goHome">
+            <p @click="goHome">EasyTrip</p>
         </div>
         <div class="r-content">
             <div class="input-content dropdown-wrapper">
@@ -54,6 +54,9 @@ onBeforeUnmount(() => {
     document.removeEventListener('click', closeDropdown);
 });
 
+const goHome = () => {
+    router.push('/');
+};
 const filteredOptions = computed(() => {
     if (!searchQuery.value) return countries.value;
     return countries.value.filter(item =>
@@ -146,7 +149,6 @@ const searchTrip = () => {
     font-size: 30px;
     margin-left: 5px;
     cursor: pointer;
-
 }
 
 #logo {

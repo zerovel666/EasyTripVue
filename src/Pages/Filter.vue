@@ -1,72 +1,78 @@
 <template>
-    <TopBar />
-    <Notification :message="notificationMessage" />
-    <div class="iconPages">
-        <div id="scrollTop" @click="scrollToTop">
-            <img src="/src/assets/images/icon/filter/scrollTop.svg" alt="">
-        </div>
-        <div id="settingFilter" @click="toggleFilter">
-            <img src="/src/assets/images/icon/filter/filter.svg" alt="">
-        </div>
-        <div v-if="isFilterOpen" class="filter-modal" ref="filterRef">
-            <h3>Фильтр</h3>
-            <div class="input-filter">
-                <label>
-                    Рейтинг:
-                    <input type="number" v-model="filters.rating" min="0" max="5" step="0.1">
-                </label>
-                <label>
-                    Город:
-                    <input type="text" v-model="filters.city">
-                </label>
-                <label>
-                    Страна:
-                    <input type="text" v-model="filters.country">
-                </label>
-                <label>
-                    Мин. цена:
-                    <input type="number" v-model="filters.minPrice">
-                </label>
-                <label>
-                    Макс. цена:
-                    <input type="number" v-model="filters.maxPrice">
-                </label>
+    <div class="bodyIfOpenModal" :style="{ pointerEvents: isModalOpen ? 'none' : 'auto', overflow: isModalOpen ? 'hidden' : 'auto'}">
+        <TopBar />
+        <Notification :message="notificationMessage" />
+        <div class="iconPages">
+            <div id="scrollTop" @click="scrollToTop">
+                <img src="/src/assets/images/icon/filter/scrollTop.svg" alt="">
             </div>
-            <button @click="applyFilters">Применить</button>
+            <div id="settingFilter" @click="toggleFilter">
+                <img src="/src/assets/images/icon/filter/filter.svg" alt="">
+            </div>
+            <div v-if="isFilterOpen" class="filter-modal" ref="filterRef">
+                <h3>Фильтр</h3>
+                <div class="input-filter">
+                    <label>
+                        Рейтинг:
+                        <input type="number" v-model="filters.rating" min="0" max="5" step="0.1">
+                    </label>
+                    <label>
+                        Город:
+                        <input type="text" v-model="filters.city">
+                    </label>
+                    <label>
+                        Страна:
+                        <input type="text" v-model="filters.country">
+                    </label>
+                    <label>
+                        Мин. цена:
+                        <input type="number" v-model="filters.minPrice">
+                    </label>
+                    <label>
+                        Макс. цена:
+                        <input type="number" v-model="filters.maxPrice">
+                    </label>
+                </div>
+                <button @click="applyFilters">Применить</button>
+            </div>
         </div>
-    </div>
 
-    <div class="content" v-for="(trip, index) in filteredTrips" :key="index">
-        <div class="trip" :style="{ backgroundImage: `url(${trip.image_path})` }">
-            <div class="shadow-box">
-                <div class="containerCard">
-                    <div class="card">
-                        <div class="card-header" :class="{ 'hidden': activeIndex === index }">
-                            <h1>{{ trip.trip_name }}</h1>
-                            <p>{{ trip.country_name }} — {{ trip.city_name }}</p>
-                            <div class="rating">
-                                <p>{{ trip.description_country.rating }}</p>
-                                <img src="/src/assets/images/icon/Star.svg" alt="">
+        <div class="content" v-for="(trip, index) in filteredTrips" :key="index">
+            <div class="trip" :style="{ backgroundImage: `url(${trip.image_path})` }">
+                <div class="shadow-box">
+                    <div class="containerCard">
+                        <div class="card">
+                            <div class="card-header" :class="{ 'hidden': activeIndex === index }">
+                                <h1>{{ trip.trip_name }}</h1>
+                                <p>{{ trip.country_name }} — {{ trip.city_name }}</p>
+                                <div class="rating">
+                                    <p>{{ trip.description_country.rating }}</p>
+                                    <img src="/src/assets/images/icon/Star.svg" alt="">
+                                </div>
+                            </div>
+                            <div class="menu" :class="{ 'rotated': activeIndex === index }"
+                                @click="toggleCardInfo(index)">
+                                <img src="/src/assets/images/FilterPages/menu.svg" alt="">
+                            </div>
+                            <div class="card-info" :class="{ 'active': activeIndex === index }">
+                                <h2>{{ trip.description_country.title }}</h2>
+                                <p class="scrollable-text">{{ trip.description_country.description }}</p>
+                                <ul v-for="(tag, index) in trip.tags" class="tags">
+                                    <li>{{ tag.tag }}</li>
+                                </ul>
+                                <p>Цена за день — {{ trip.price_per_day }} {{ trip.currency }}</p>
+                                <button @click="openModal">Забронировать</button>
                             </div>
                         </div>
-                        <div class="menu" :class="{ 'rotated': activeIndex === index }" @click="toggleCardInfo(index)">
-                            <img src="/src/assets/images/FilterPages/menu.svg" alt="">
-                        </div>
-                        <div class="card-info" :class="{ 'active': activeIndex === index }">
-                            <h2>{{ trip.description_country.title }}</h2>
-                            <p class="scrollable-text">{{ trip.description_country.description }}</p>
-                            <ul v-for="(tag, index) in trip.tags" class="tags">
-                                <li>{{ tag.tag }}</li>
-                            </ul>
-                            <p>Цена за день — {{ trip.price_per_day }} {{ trip.currency }}</p>
-                            <button>Забронировать</button>
-                        </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
         </div>
+        <Footer />
     </div>
+    <ModalBuy :isOpen="isModalOpen" @close="isModalOpen = false" />
+
 </template>
 
 <script setup>
@@ -76,6 +82,8 @@ import axios from 'axios';
 import TopBar from '@/components/Layouts/TopBar.vue';
 import { API_URL } from '@/config';
 import Notification from '@/components/Layouts/Notification.vue';
+import Footer from '@/components/Layouts/Footer.vue';
+import ModalBuy from '@/components/Modal/ModalBuy.vue';
 
 const route = useRoute();
 const trips = ref([]);
@@ -83,6 +91,10 @@ const filteredTrips = ref([]);
 const activeIndex = ref(null);
 const isFilterOpen = ref(false);
 const notificationMessage = ref('');
+const isModalOpen = ref(false);
+
+const openModal = () => isModalOpen.value = true;
+const closeModal = () => isModalOpen.value = false;
 
 const filters = ref({
     tripName: '',
@@ -97,7 +109,7 @@ const getAllTrips = async () => {
     const response = await axios.get(API_URL + '/country/all');
     trips.value = response.data;
     filteredTrips.value = response.data;
-    
+
     if (route.params.trip_name) {
         filters.value.tripName = route.params.trip_name;
         applyFilters();
