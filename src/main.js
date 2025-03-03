@@ -1,15 +1,38 @@
-import './assets/main.css'
+import './assets/main.css';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import Main from './Pages/Main.vue'
-import Filter from './Pages/Filter.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import Main from './Pages/Main.vue';
+import Filter from './Pages/Filter.vue';
+import SetParamsForBuyTrip from './Pages/SetParamsForBuyTrip.vue';
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/reset.css';
+import axios from 'axios';
+import { API_URL } from './config'; 
+
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+}
+
+axios.interceptors.request.use((config) => {
+    const userId = getCookie('userid');
+    if (userId) {
+        config.headers['userid'] = userId;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
+axios.defaults.baseURL = API_URL;
 
 const routes = [
     { path: '/', component: Main },
-    { path: '/filter/:trip_name?', component: Filter }
-]
+    { path: '/filter/:trip_name?', component: Filter },
+    { path: '/buy/trip/:trip_name', component: SetParamsForBuyTrip }
+];
 
 const router = createRouter({
     history: createWebHistory(),
@@ -18,5 +41,6 @@ const router = createRouter({
 
 const app = createApp(App);
 app.use(router);
+app.use(Antd);
+app.config.globalProperties.$axios = axios;
 app.mount('#app');
-

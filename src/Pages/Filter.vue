@@ -1,6 +1,4 @@
 <template>
-    <div class="bodyIfOpenModal"
-        :style="{ pointerEvents: isModalOpen ? 'none' : 'auto', overflow: isModalOpen ? 'hidden' : 'auto' }">
         <TopBar />
         <Notification :message="notificationMessage" />
         <div class="iconPages">
@@ -62,7 +60,7 @@
                                     <li>{{ tag.tag }}</li>
                                 </ul>
                                 <p>Цена за день — {{ trip.price_per_day }} {{ trip.currency }}</p>
-                                <button @click="openModal(trip)">Забронировать</button>
+                                <button @click="goBuy(trip)">Забронировать</button>
                             </div>
                         </div>
 
@@ -71,36 +69,26 @@
             </div>
         </div>
         <Footer />
-    </div>
-    <ModalBuy :selectedTrip="selectedTrip" :isOpen="isModalOpen" @close="isModalOpen = false" />
 
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 import axios from 'axios';
 import TopBar from '@/components/Layouts/TopBar.vue';
 import { API_URL } from '@/config';
 import Notification from '@/components/Layouts/Notification.vue';
 import Footer from '@/components/Layouts/Footer.vue';
-import ModalBuy from '@/components/Modal/ModalBuy.vue';
 
 const route = useRoute();
+const router  = useRouter();
 const trips = ref([]);
 const filteredTrips = ref([]);
 const activeIndex = ref(null);
 const isFilterOpen = ref(false);
 const notificationMessage = ref('');
-const isModalOpen = ref(false);
 const selectedTrip = ref(null);
-
-const openModal = (trip) => {
-    isModalOpen.value = true;
-    selectedTrip.value = trip;
-};
-;
-const closeModal = () => isModalOpen.value = false;
 
 const filters = ref({
     tripName: '',
@@ -133,6 +121,9 @@ watch(() => route.params.trip_name, (newTripName) => {
     }
 });
 
+const goBuy = (trip) => {
+    router.push(`/buy/trip/${trip.trip_name}`);
+} 
 
 const applyFilters = () => {
     filteredTrips.value = trips.value.filter(trip => {
