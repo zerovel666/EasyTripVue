@@ -133,22 +133,21 @@ const searchTrip = () => {
 .container {
     display: flex;
     justify-content: space-between;
-    max-height: 70px;
     align-items: center;
+    height: 70px;
 }
 
 .content-logo {
     display: flex;
-    justify-content: left;
     align-items: center;
-    width: 35%;
-    height: 70px;
+    gap: 10px;
 }
 
 .content-logo p {
     font-size: 30px;
-    margin-left: 5px;
+    margin: 0;
     cursor: pointer;
+    line-height: 1; 
 }
 
 #logo {
@@ -158,17 +157,20 @@ const searchTrip = () => {
 
 .r-content {
     display: flex;
-    justify-content: left;
-    align-items: center;
+    justify-content: center; 
+    align-items: center; 
     height: 70px;
     width: 75%;
-
+    gap: 15px; 
 }
 
 .r-content p {
-    margin-left: 10px;
+    margin: 0; 
     cursor: pointer;
+    border: none; 
+    font-size: 18px;
 }
+
 
 .input-content {
     width: 60%;
@@ -208,7 +210,7 @@ const searchTrip = () => {
 }
 
 #auth {
-    margin-left: 9%;
+    margin-left: auto;
     color: #007b5b;
 }
 </style>
