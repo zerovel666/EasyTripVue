@@ -1,26 +1,27 @@
 <template>
     <TopBar />
-    <div class="calendar-container">
-        <div class="header">
-            <button @click="backMonth">&#9659;</button>
-            <span>{{ currentMonth }}</span>
-            <button @click="nextMonth">&#9660;</button>
-        </div>
-        <div class="weekdays">
-            <span v-for="day in weekdays" :key="day">{{ day }}</span>
-        </div>
-        <div class="calendar">
-            <span v-for="day in paddedDays" :key="day.date" :class="{
-                'occupied': day.isOccupied,
-                'selected': isSelected(day.date),
-                'in-range': isInRange(day.date),
-                'last-selected': isLastSelected(day.date), // Добавлено
-                'current': day.isToday
-            }" @click="selectDate(day)">
-                {{ day.display }}
-            </span>
+    <div class="container">
+        <div class="calendar-container">
+            <div class="header">
+                <button @click="backMonth">&#9665;</button>
+                <span>{{ currentMonth }}</span>
+                <button @click="nextMonth">&#9655;</button>
 
-
+            </div>
+            <div class="weekdays">
+                <span v-for="day in weekdays" :key="day">{{ day }}</span>
+            </div>
+            <div class="calendar">
+                <span v-for="day in paddedDays" :key="day.date" :class="{
+                    'occupied': day.isOccupied,
+                    'selected': isSelected(day.date),
+                    'in-range': isInRange(day.date),
+                    'last-selected': isLastSelected(day.date),
+                    'current': day.isToday
+                }" @click="selectDate(day)">
+                    {{ day.display }}
+                </span>
+            </div>
         </div>
     </div>
     <Footer />
@@ -142,36 +143,35 @@ fetchOccupiedDates();
 
 <style scoped>
 .calendar-container {
-    width: 300px;
+    max-width: 400px;
+    width: 100%;
     background: #2d2d2d;
     color: white;
-    padding: 15px;
     border-radius: 8px;
+    padding: 10px;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 18px;
     margin-bottom: 10px;
 }
 
-.weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    font-weight: bold;
+.header button {
+    background: none;
 }
 
+.weekdays,
 .calendar {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(30px, 1fr));
     gap: 5px;
 }
 
 .calendar span {
-    width: 36px;
-    height: 36px;
+    width: 100%;
+    aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -184,19 +184,13 @@ fetchOccupiedDates();
     pointer-events: none;
 }
 
-.selected {
-    background: green;
-}
-
 .selected,
 .last-selected {
-    background: green !important;
+    background: #02BF8C !important;
 }
 
-
-
 .in-range {
-    background: rgba(0, 0, 255, 0.5);
+    background: #01906a;
 }
 
 .current {
