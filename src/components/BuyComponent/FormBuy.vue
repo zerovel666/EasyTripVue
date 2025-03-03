@@ -2,7 +2,10 @@
     <div class="content">
         <div class="tourists">
             <div v-for="(tourist, index) in tourists" :key="index" class="tourist">
-                <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required />
+                <div class="input-container">
+                    <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required />
+                    <button class="remove-btn" @click="removeTourist(index)">−</button>
+                </div>
             </div>
             <button @click="addTourist">Добавить туриста</button>
         </div>
@@ -15,7 +18,7 @@
             <div class="card">
                 <p>Количество туристов: {{ touristsCount }}</p>
                 <p>Количество дней: {{ countDays }}</p>
-                <p>Общая цена: {{countDays * touristsCount * trip.price_per_day  }} {{ trip.currency }}</p>
+                <p>Общая цена: {{ amount }} {{ trip.currency }}</p>
                 <button @click="checkAndProceedToPayment">Перейти к оплате</button>
             </div>
         </div>
@@ -26,18 +29,20 @@
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import Notification from '../Layouts/Notification.vue';
 
+const emit = defineEmits(['updateTouristsData']);
 const route = useRoute();
 const tourists = ref([]);
-const trip = ref([]);
+const trip = ref({});
+const amount = ref(null);
 const notificationMessage = ref('');
-const countFreePlace = ref(null)
+const countFreePlace = ref(null);
 const touristsCount = computed(() => tourists.value.length);
 
-defineProps({
+const props = defineProps({
     countDays: {
         type: Number,
         required: true,
@@ -50,6 +55,17 @@ const getTrip = async () => {
     countFreePlace.value = trip.value.count_place - trip.value.occupied;
 };
 
+watch(() => props.countDays, () => {
+    if (trip.value.price_per_day) {
+        amount.value = props.countDays * touristsCount.value * trip.value.price_per_day;
+    }
+});
+
+watch(() => tourists.value.length, () => {
+    if (trip.value.price_per_day) {
+        amount.value = props.countDays * touristsCount.value * trip.value.price_per_day;
+    }
+});
 
 const addTourist = () => {
     if (tourists.value.length >= countFreePlace.value) {
@@ -57,10 +73,14 @@ const addTourist = () => {
         return;
     }
     tourists.value.push('');
-
 };
+
+const removeTourist = (index) => {
+    tourists.value.splice(index, 1);
+};
+
 const checkAndProceedToPayment = () => {
-    if (tourists.value.some(t => !t.trim())) {
+    if (tourists.value.some(t => typeof t !== 'string' || !t.trim())) {
         notificationMessage.value = "Заполните все поля ИИН!";
         return;
     }
@@ -70,8 +90,8 @@ const checkAndProceedToPayment = () => {
         return;
     }
 
+    emit('updateTouristsData', tourists.value);
 };
-
 
 onMounted(getTrip);
 </script>
@@ -83,11 +103,45 @@ onMounted(getTrip);
     width: 100%;
 }
 
-.tourist input {
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-container input {
+    flex: 1;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     width: 100%;
+    padding-right: 30px;
+}
+
+.remove-btn {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.1) !important;
+    border: none;
+    color: #666;
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.remove-btn:hover {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: white;
 }
 
 .tourists button {
@@ -115,18 +169,6 @@ button:hover {
     scrollbar-color: #02BF8C #f0f0f0;
 }
 
-.tourists:-webkit-scrollbar {
-    width: 6px;
-}
-.tourists:-webkit-scrollbar-thumb {
-    background-color: #02BF8C;
-    border-radius: 10px;
-}
-.tourists:-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 10px;
-}
-
 .card {
     margin-top: 10%;
     background-color: #02BF8C;
@@ -134,16 +176,18 @@ button:hover {
     padding: 15px;
     border-radius: 10px;
 }
-.card button{
+
+.card button {
     background-color: #02976F;
     padding: 8px 12px;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background 0.3s ease ;
+    transition: background 0.3s ease;
 }
-.card button:hover{
+
+.card button:hover {
     background-color: #01664b;
 }
 </style>

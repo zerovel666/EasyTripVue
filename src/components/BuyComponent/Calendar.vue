@@ -39,7 +39,7 @@ const occupiedDates = ref(new Set());
 const selectedRange = ref([]);
 const currentDate = ref(dayjs());
 const notificationMessage = ref('');
-const emit = defineEmits();
+const emit = defineEmits(['updateCountDays']);
 
 const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 const currentMonth = computed(() => currentDate.value.format('MMMM YYYY'));
