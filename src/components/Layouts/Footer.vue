@@ -79,11 +79,12 @@ const hoverTelegram = ref(false);
 
 <style scoped>
 footer {
-    margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .content {
     display: flex;
+    margin-bottom: 20px;
 }
 
 h3 {
@@ -170,4 +171,8 @@ h3 {
 .r-block p {
     cursor: pointer;
 }
+.link-social p{
+    margin-top: 15px;
+}
+
 </style>
