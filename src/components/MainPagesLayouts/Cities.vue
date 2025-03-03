@@ -51,7 +51,7 @@ onMounted(getCities);
 <style scoped>
 h2 {
     text-align: center;
-    margin: 20px 0 0 0;
+    margin: 20px 0 20px 0;
 }
 
 .container p {
