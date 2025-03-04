@@ -3,7 +3,8 @@
         <div class="tourists">
             <div v-for="(tourist, index) in tourists" :key="index" class="tourist">
                 <div class="input-container">
-                    <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required />
+                    <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required
+                        @input="tourists[index] = $event.target.value.replace(/\D/g, '')" />
                     <button class="remove-btn" @click="removeTourist(index)">−</button>
                 </div>
             </div>
@@ -70,6 +71,9 @@ watch(() => tourists.value.length, () => {
 const addTourist = () => {
     if (tourists.value.length >= countFreePlace.value) {
         notificationMessage.value = "Превышено количество свободных мест";
+        setTimeout(() => {
+            notificationMessage.value = '';
+        }, 3000);
         return;
     }
     tourists.value.push('');
@@ -82,15 +86,25 @@ const removeTourist = (index) => {
 const checkAndProceedToPayment = () => {
     if (tourists.value.some(t => typeof t !== 'string' || !t.trim())) {
         notificationMessage.value = "Заполните все поля ИИН!";
+        setTimeout(() => {
+            notificationMessage.value = '';
+        }, 3000);
         return;
     }
 
     if (tourists.value.some(t => t.length !== 12)) {
         notificationMessage.value = "ИИН должен содержать ровно 12 символов!";
+        setTimeout(() => {
+            notificationMessage.value = '';
+        }, 3000);
         return;
     }
-
-    emit('updateTouristsData', tourists.value);
+    const params = {
+        amountDay : trip.price_per_day,
+        tourists :  tourists.value,
+        occupiedPlace : touristsCount,
+    }
+    emit('updateTouristsData',params);
 };
 
 onMounted(getTrip);
@@ -116,6 +130,12 @@ onMounted(getTrip);
     border-radius: 4px;
     width: 100%;
     padding-right: 30px;
+}
+
+.input-container input[type="number"]::-webkit-outer-spin-button,
+.input-container input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .remove-btn {

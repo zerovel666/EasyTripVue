@@ -1,9 +1,9 @@
 <template>
     <div class="calendar-container">
         <div class="header">
-            <button @click="backMonth">&#9665;</button>
+            <p @click="backMonth">&#9665;</p>
             <span>{{ currentMonth }}</span>
-            <button @click="nextMonth">&#9655;</button>
+            <p @click="nextMonth">&#9655;</p>
 
         </div>
         <div class="weekdays">
@@ -115,6 +115,12 @@ function selectDate(day) {
     }
 }
 
+function getSelectedDates() {
+    return selectedRange.value;
+}
+
+defineExpose({ getSelectedDates });
+
 
 function isSelected(date) {
     return selectedRange.value.includes(date);
@@ -141,6 +147,7 @@ fetchOccupiedDates();
 </script>
 
 <style scoped>
+
 .calendar-container {
     max-width: 400px;
     width: 100%;
@@ -152,17 +159,21 @@ fetchOccupiedDates();
 }
 
 .header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
-.header button{
+.header p{
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 25px;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
 }
 
 .header button {
