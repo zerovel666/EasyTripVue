@@ -4,7 +4,7 @@
             <div v-for="(tourist, index) in tourists" :key="index" class="tourist">
                 <div class="input-container">
                     <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required
-                        @input="tourists[index] = $event.target.value.replace(/\D/g, '')" />
+                       maxlength="12" @input="tourists[index] = $event.target.value.replace(/\D/g, '')" />
                     <button class="remove-btn" @click="removeTourist(index)">−</button>
                 </div>
             </div>
@@ -100,7 +100,7 @@ const checkAndProceedToPayment = () => {
         return;
     }
     const params = {
-        amountDay : trip.price_per_day,
+        amountDay : trip.value.price_per_day,
         tourists :  tourists.value,
         occupiedPlace : touristsCount,
     }
