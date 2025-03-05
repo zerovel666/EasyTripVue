@@ -21,13 +21,18 @@
             <p v-if="countTrip">{{ countTrip }} городов</p>
         </div>
     </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
 </template>
 
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, watch } from 'vue';
+import { inject } from 'vue';
 
+const loading = inject('loading');
 const props = defineProps({
     countTrip: Number,
 });
@@ -42,6 +47,14 @@ const getCardInfos = async () => {
         console.error("Ошибка при загрузке данных:", error);
     }
 };
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+});
 
 onMounted(getCardInfos);
 </script>

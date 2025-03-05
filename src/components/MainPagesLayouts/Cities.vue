@@ -18,14 +18,19 @@
         <div id="buttonCont">
             <button>Посмотреть все города</button>
         </div>
+        <div v-if="loading.active" class="loader">
+            <a-spin size="large" />
+        </div>
     </div>
 </template>
 
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { onMounted, ref, computed, defineEmits } from 'vue';
+import { onMounted, ref, computed, defineEmits, watch } from 'vue';
+import { inject } from 'vue';
 
+const loading = inject('loading');
 const cities = ref([]);
 const countTrip = ref(null);
 const emit = defineEmits(['updateCountTrip']);
@@ -42,6 +47,14 @@ const visibleCities = computed(() => {
     const count = cities.value.length;
     const maxCount = count - (count % 3);
     return cities.value.slice(0, maxCount);
+});
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
 });
 
 onMounted(getCities);

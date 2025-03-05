@@ -3,8 +3,8 @@
         <div class="tourists">
             <div v-for="(tourist, index) in tourists" :key="index" class="tourist">
                 <div class="input-container">
-                    <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required
-                       maxlength="12" @input="tourists[index] = $event.target.value.replace(/\D/g, '')" />
+                    <input type="text" v-model="tourists[index]" placeholder="ИИН туриста" required maxlength="12"
+                        @input="tourists[index] = $event.target.value.replace(/\D/g, '')" />
                     <button class="remove-btn" @click="removeTourist(index)">−</button>
                 </div>
             </div>
@@ -24,6 +24,9 @@
             </div>
         </div>
     </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
     <Notification :message="notificationMessage" />
 </template>
 
@@ -33,7 +36,9 @@ import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import Notification from '../Layouts/Notification.vue';
+import { inject } from 'vue';
 
+const loading = inject('loading');
 const emit = defineEmits(['updateTouristsData']);
 const route = useRoute();
 const tourists = ref([]);
@@ -47,6 +52,14 @@ const props = defineProps({
     countDays: {
         type: Number,
         required: true,
+    }
+});
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
     }
 });
 
@@ -100,11 +113,11 @@ const checkAndProceedToPayment = () => {
         return;
     }
     const params = {
-        amountDay : trip.value.price_per_day,
-        tourists :  tourists.value,
-        occupiedPlace : touristsCount,
+        amountDay: trip.value.price_per_day,
+        tourists: tourists.value,
+        occupiedPlace: touristsCount,
     }
-    emit('updateTouristsData',params);
+    emit('updateTouristsData', params);
 };
 
 onMounted(getTrip);

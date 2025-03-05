@@ -7,7 +7,7 @@
         <div class="r-content">
             <div class="input-content dropdown-wrapper">
                 <input type="text" placeholder="Куда вы собираетесь поехать?" v-model="searchQuery"
-                    @focus="showDropdown = true" @click="searchQuery = ''"/>
+                    @focus="showDropdown = true" @click="searchQuery = ''" />
                 <button @click="searchTrip">
                     <img src="/src/assets/images/icon/Search.svg" alt="">
                 </button>
@@ -23,14 +23,19 @@
             <p id="auth">Войти</p>
         </div>
     </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import axios from 'axios';
 import { API_URL } from '@/config';
 import { useRouter } from 'vue-router';
+import { inject } from 'vue';
 
+const loading = inject('loading');
 const router = useRouter();
 const countries = ref([]);
 const searchQuery = ref('');
@@ -48,6 +53,14 @@ const getCountries = async () => {
 onMounted(() => {
     getCountries();
     document.addEventListener('click', closeDropdown);
+});
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
 });
 
 onBeforeUnmount(() => {
@@ -147,7 +160,7 @@ const searchTrip = () => {
     font-size: 30px;
     margin: 0;
     cursor: pointer;
-    line-height: 1; 
+    line-height: 1;
 }
 
 #logo {
@@ -157,17 +170,17 @@ const searchTrip = () => {
 
 .r-content {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
     height: 70px;
     width: 75%;
-    gap: 15px; 
+    gap: 15px;
 }
 
 .r-content p {
-    margin: 0; 
+    margin: 0;
     cursor: pointer;
-    border: none; 
+    border: none;
     font-size: 18px;
 }
 

@@ -21,6 +21,9 @@
             </span>
         </div>
     </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
     <Notification :message="notificationMessage" />
 
 </template>
@@ -32,7 +35,9 @@ import dayjs from 'dayjs';
 import { API_URL } from '@/config';
 import { useRoute } from 'vue-router';
 import Notification from '../Layouts/Notification.vue';
+import { inject, watch } from 'vue';
 
+const loading = inject('loading');
 
 const route = useRoute();
 const occupiedDates = ref(new Set());
@@ -59,6 +64,14 @@ async function fetchOccupiedDates() {
         console.error('Ошибка загрузки занятых дат:', error);
     }
 }
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+});
 
 const firstDayOffset = computed(() => dayjs(currentDate.value).startOf('month').day() || 7);
 const paddedDays = computed(() => {
@@ -147,7 +160,6 @@ fetchOccupiedDates();
 </script>
 
 <style scoped>
-
 .calendar-container {
     max-width: 400px;
     width: 100%;
@@ -165,7 +177,8 @@ fetchOccupiedDates();
     align-items: center;
     margin-bottom: 20px;
 }
-.header p{
+
+.header p {
     border-radius: 8px;
     display: flex;
     justify-content: center;

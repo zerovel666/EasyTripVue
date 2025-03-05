@@ -1,6 +1,6 @@
 import './assets/main.css';
 
-import { createApp } from 'vue';
+import { createApp, reactive } from 'vue';
 import App from './App.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import Main from './Pages/Main.vue';
@@ -16,13 +16,26 @@ function getCookie(name) {
     return match ? match[2] : null;
 }
 
+// Глобальная переменная для отслеживания загрузки
+const loading = reactive({ active: false });
+
 axios.interceptors.request.use((config) => {
     const userId = getCookie('userid');
     if (userId) {
         config.headers['userid'] = userId;
     }
+    loading.active = true; // Включаем индикатор загрузки
     return config;
 }, (error) => {
+    loading.active = false;
+    return Promise.reject(error);
+});
+
+axios.interceptors.response.use((response) => {
+    loading.active = false; 
+    return response;
+}, (error) => {
+    loading.active = false;
     return Promise.reject(error);
 });
 
@@ -43,4 +56,5 @@ const app = createApp(App);
 app.use(router);
 app.use(Antd);
 app.config.globalProperties.$axios = axios;
+app.provide('loading', loading); 
 app.mount('#app');

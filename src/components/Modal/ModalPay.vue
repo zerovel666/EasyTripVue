@@ -8,10 +8,12 @@
                         <h3>Контактная информация</h3>
                     </div>
                     <div class="inputContact">
-                        <input type="text" placeholder="Email" v-model="email" autocomplete="new-password" spellcheck="false">
+                        <input type="text" placeholder="Email" v-model="email" autocomplete="new-password"
+                            spellcheck="false">
                         <input type="text" placeholder="Номер телефона" v-model="phone" inputmode="numeric"
                             autocomplete="new-password" spellcheck="false" @input="phone = phone.replace(/\D/g, '')">
-                        <input type="text" placeholder="ФИО" v-model="full_name" autocomplete="new-password" spellcheck="false">
+                        <input type="text" placeholder="ФИО" v-model="full_name" autocomplete="new-password"
+                            spellcheck="false">
                     </div>
                 </div>
                 <div class="changePayment">
@@ -51,13 +53,17 @@
                         <h3>Оплата</h3>
                     </div>
                     <div class="policy">
-                        <button @click="addBooking">К оплате {{ paramsForBuy.occupied_place * paramsForBuy.price_per_day * paramsForBuy.count_days }} KZT</button>
+                        <button @click="addBooking">К оплате {{ paramsForBuy.occupied_place * paramsForBuy.price_per_day
+                            * paramsForBuy.count_days }} KZT</button>
                         <p>Проводя оплату вы принимаете нашу политику конфиденциальности и условия сервиса<br>
-                        © От 2025, EasyTrip, Halyk, Kaspi, Visa, MasterCard</p>
+                            © От 2025, EasyTrip, Halyk, Kaspi, Visa, MasterCard</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
     </div>
 </template>
 
@@ -66,7 +72,9 @@ import { API_URL } from '@/config';
 import axios from 'axios';
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { inject } from 'vue';
 
+const loading = inject('loading');
 const route = useRoute();
 const props = defineProps({
     showModal: Boolean,
@@ -81,6 +89,14 @@ const selectedPayment = ref(null);
 const phone = ref('+7');
 const email = ref('');
 const full_name = ref('');
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+});
 
 watch(phone, (newValue) => {
     let cleaned = newValue.replace(/\D/g, '');
@@ -124,26 +140,26 @@ const selectPayment = (index) => {
 
 const addBooking = async () => {
     const params = {
-        card : {
-            phone : phone.value,
-            email : email.value,
-            full_name : full_name.value,
-            type : paymentMethods.value[selectedPayment.value]['name'],
-            num_card : cardNumber.value,
-            fn_mn_card : cardHolder.value,
-            trip_name : route.params.trip_name,
-            amount : props.paramsForBuy.occupied_place * props.paramsForBuy.price_per_day * props.paramsForBuy.count_days
+        card: {
+            phone: phone.value,
+            email: email.value,
+            full_name: full_name.value,
+            type: paymentMethods.value[selectedPayment.value]['name'],
+            num_card: cardNumber.value,
+            fn_mn_card: cardHolder.value,
+            trip_name: route.params.trip_name,
+            amount: props.paramsForBuy.occupied_place * props.paramsForBuy.price_per_day * props.paramsForBuy.count_days
         },
-        data : {
-            occupied_place : props.paramsForBuy.occupied_place,
-            check_in : props.paramsForBuy.check_in,
-            check_out : props.paramsForBuy.check_out,
-            users_iins : props.paramsForBuy.users_iins
+        data: {
+            occupied_place: props.paramsForBuy.occupied_place,
+            check_in: props.paramsForBuy.check_in,
+            check_out: props.paramsForBuy.check_out,
+            users_iins: props.paramsForBuy.users_iins
         }
     }
     const response = await axios.post(`${API_URL}/payment/paid`, params);
-    if (response.status == 200){
-        
+    if (response.status == 200) {
+
     }
 }
 
@@ -313,14 +329,16 @@ const addBooking = async () => {
 #dateCard {
     width: 10% !important;
 }
-.policy{
+
+.policy {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     gap: 10px;
 }
-.policy button{
+
+.policy button {
     border: none;
     border-radius: 10px;
     background-color: #02BF8C;
@@ -329,10 +347,12 @@ const addBooking = async () => {
     width: 50%;
     transition: background 0.3s ease;
 }
-.policy button:hover{
+
+.policy button:hover {
     background-color: #028c67;
 }
-.policy p{
+
+.policy p {
     font-size: 12px;
     text-align: center;
 }

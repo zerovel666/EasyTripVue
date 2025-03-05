@@ -20,17 +20,22 @@
                 </li>
             </ul>
         </div>
+        <div v-if="loading.active" class="loader">
+            <a-spin size="large" />
+        </div>
     </div>
 </template>
 
 <script setup>
 import { Carousel, Slide } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import axios from 'axios';
 import { API_URL } from '@/config';
 import { useRouter } from 'vue-router';
+import { inject } from 'vue';
 
+const loading = inject('loading');
 const countries = ref([]);
 const searchQuery = ref('');
 const showDropdown = ref(false);
@@ -41,6 +46,14 @@ const banners = ref([
     { image: "/src/assets/images/banner/bannerSea.svg", text: "Наслаждайтесь морем и солнцем" },
     { image: "/src/assets/images/banner/bannerMountain.svg", text: "EasyTrip всегда с вами!" },
 ]);
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+});
 
 const getCountries = async () => {
     try {
