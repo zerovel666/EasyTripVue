@@ -16,7 +16,6 @@ function getCookie(name) {
     return match ? match[2] : null;
 }
 
-// Глобальная переменная для отслеживания загрузки
 const loading = reactive({ active: false });
 
 axios.interceptors.request.use((config) => {
@@ -24,7 +23,7 @@ axios.interceptors.request.use((config) => {
     if (userId) {
         config.headers['userid'] = userId;
     }
-    loading.active = true; // Включаем индикатор загрузки
+    loading.active = true; 
     return config;
 }, (error) => {
     loading.active = false;

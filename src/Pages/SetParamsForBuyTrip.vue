@@ -19,8 +19,9 @@ import FormBuy from '@/components/BuyComponent/FormBuy.vue';
 import ModalPay from '@/components/Modal/ModalPay.vue';
 import { ref, watch, onUnmounted } from 'vue';
 import Notification from '@/components/Layouts/Notification.vue';
+import Cookies from 'universal-cookie';
 
-
+const cookies = new Cookies();
 const countDays = ref(0);
 const touristsData = ref([]);
 const calendarRef = ref(null);
@@ -57,22 +58,29 @@ const handleTouristsData = (data) => {
 };
 
 watch(() => paramsForBuy.value, (newVal) => {
-    if (newVal &&
-        newVal.occupied_place &&
-        newVal.count_days &&
-        newVal.price_per_day &&
-        newVal.check_in &&
-        newVal.check_out &&
-        newVal.users_iins?.length > 0
-    ) {
-        showModal.value = true;
+    const userId = cookies.get('userid');
+    if (userId) {
+        if (newVal &&
+            newVal.occupied_place &&
+            newVal.count_days &&
+            newVal.price_per_day &&
+            newVal.check_in &&
+            newVal.check_out &&
+            newVal.users_iins?.length > 0
+        ) {
+            showModal.value = true;
+        } else {
+            messageNotification.value = 'Заполните все данные';
+        }
     } else {
-        messageNotification.value = 'Заполните все данные';
-        setTimeout(() => {
-            messageNotification.value = '';
-        },3000);
+        messageNotification.value = 'Вы не авторизованы';
     }
+
+    setTimeout(() => {
+        messageNotification.value = '';
+    }, 3000);
 });
+
 
 
 </script>
