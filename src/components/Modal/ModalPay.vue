@@ -65,6 +65,7 @@
     <div v-if="loading.active" class="loader">
         <a-spin size="large" />
     </div>
+    <Notification :message="notificationMessage"/>
 </template>
 
 <script setup>
@@ -73,6 +74,7 @@ import axios from 'axios';
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { inject } from 'vue';
+import Notification from '../Layouts/Notification.vue';
 
 const loading = inject('loading');
 const route = useRoute();
@@ -81,6 +83,7 @@ const props = defineProps({
     paramsForBuy: Object
 });
 
+const notificationMessage = ref('');
 const cardNumber = ref('');
 const cardHolder = ref('');
 const cvv = ref('');
@@ -159,14 +162,14 @@ const addBooking = async () => {
     }
     const response = await axios.post(`${API_URL}/payment/paid`, params);
     if (response.status == 200) {
-
+        notificationMessage.value = "Успешная покупка! Вся информация отправлена на указанный email";
+        setTimeout(() => {
+            notificationMessage.value = '';
+        }, 3000);
     }
 }
 
 </script>
-
-
-
 
 <style scoped>
 .overlay-modal {
