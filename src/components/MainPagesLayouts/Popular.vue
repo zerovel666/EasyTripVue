@@ -3,7 +3,8 @@
         <h2>Популярное</h2>
         <div class="cards">
             <div class="card" v-for="(card, index) in cardInfos" :key="index"
-                :style="{ backgroundImage: `url(${card.image_path})` }">
+                :style="{ backgroundImage: `url(${card.image_path})` }"
+                @click="selectCard(card)">
                 <div class="card-info">
                     <div class="head_card_item">
                         <p>{{ card.trip_name }}</p>
@@ -17,7 +18,7 @@
             </div>
         </div>
         <div id="buttonCont">
-            <button>Посмотреть все туры</button>
+            <button @click="goFilter">Посмотреть все туры</button>
             <p v-if="countTrip">{{ countTrip }} городов</p>
         </div>
     </div>
@@ -31,13 +32,16 @@ import { API_URL } from '@/config';
 import axios from 'axios';
 import { onMounted, ref, defineProps, watch } from 'vue';
 import { inject } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const loading = inject('loading');
 const props = defineProps({
     countTrip: Number,
 });
 
 const cardInfos = ref([]);
+const selectedCard = ref(null);
 
 const getCardInfos = async () => {
     try {
@@ -47,6 +51,18 @@ const getCardInfos = async () => {
         console.error("Ошибка при загрузке данных:", error);
     }
 };
+const goFilter = () => {
+    router.push('/filter');
+}
+const selectCard = (card) => {
+    selectedCard.value = card;
+};
+
+watch(selectedCard, (newCard) => {
+    if (newCard) {
+        router.push(`/filter/${newCard.trip_name}`)
+    }
+});
 
 watch(() => loading.active, (newVal) => {
     if (newVal) {
@@ -58,6 +74,7 @@ watch(() => loading.active, (newVal) => {
 
 onMounted(getCardInfos);
 </script>
+
 
 <style scoped>
 h2 {

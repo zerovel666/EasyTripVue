@@ -16,7 +16,7 @@
             </div>
         </div>
         <div id="buttonCont">
-            <button>Посмотреть все города</button>
+            <button @click="goFilter">Посмотреть все</button>
         </div>
         <div v-if="loading.active" class="loader">
             <a-spin size="large" />
@@ -29,7 +29,9 @@ import { API_URL } from '@/config';
 import axios from 'axios';
 import { onMounted, ref, computed, defineEmits, watch } from 'vue';
 import { inject } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const loading = inject('loading');
 const cities = ref([]);
 const countTrip = ref(null);
@@ -43,6 +45,9 @@ const getCities = async () => {
     emit('updateCountTrip', countTrip.value);
 };
 
+const goFilter = () => {
+    router.push('/filter');
+}
 const visibleCities = computed(() => {
     const count = cities.value.length;
     const maxCount = count - (count % 3);

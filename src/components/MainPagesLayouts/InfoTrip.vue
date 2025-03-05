@@ -4,7 +4,7 @@
             <div class="content">
                 <h2>Если путешествовать — то с EasyTrip!</h2>
                 <p>Бронируйте туры в пару кликов и отправляйтесь в путешествие мечты.</p>
-                <button>Найти идеальный тур</button>
+                <button @click="goFilterByOpenFilter">Найти идеальный тур</button>
             </div>
         </div>
     </div>
@@ -27,6 +27,13 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goFilterByOpenFilter = () => {
+    router.push('/filter');
+};
 
 </script>
 
