@@ -10,6 +10,8 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 import axios from 'axios';
 import { API_URL } from './config'; 
+import LoginPage from './Pages/Auth/LoginPage.vue';
+import RegisterPage from './Pages/Auth/RegisterPage.vue';
 
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -43,7 +45,9 @@ axios.defaults.baseURL = API_URL;
 const routes = [
     { path: '/', component: Main },
     { path: '/filter/:trip_name?', component: Filter },
-    { path: '/buy/trip/:trip_name', component: SetParamsForBuyTrip }
+    { path: '/buy/trip/:trip_name', component: SetParamsForBuyTrip },
+    { path: '/login', component: LoginPage },
+    { path: '/register', component: RegisterPage }
 ];
 
 const router = createRouter({

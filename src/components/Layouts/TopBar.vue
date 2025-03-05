@@ -20,7 +20,7 @@
             </div>
             <p>О проекте •</p>
             <p>Меню •</p>
-            <p id="auth">Войти</p>
+            <p id="auth" @click="goLogin" v-if="isAuthorized">Войти</p>
         </div>
     </div>
     <div v-if="loading.active" class="loader">
@@ -34,13 +34,22 @@ import axios from 'axios';
 import { API_URL } from '@/config';
 import { useRouter } from 'vue-router';
 import { inject } from 'vue';
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies();
 const loading = inject('loading');
 const router = useRouter();
 const countries = ref([]);
 const searchQuery = ref('');
 const showDropdown = ref(false);
+const isAuthorized = ref(true);
 
+const authorizedBool = () => {
+    const userId = cookies.get('userid');
+    if (userId) {
+        isAuthorized.value = false
+    }
+}
 const getCountries = async () => {
     try {
         const response = await axios.get(API_URL + "/country/all");
@@ -49,7 +58,9 @@ const getCountries = async () => {
         console.error("Ошибка загрузки данных:", error);
     }
 };
-
+const goLogin = () => {
+    router.push('/login');
+}
 onMounted(() => {
     getCountries();
     document.addEventListener('click', closeDropdown);
@@ -94,7 +105,7 @@ const searchTrip = () => {
     const query = searchQuery.value.trim();
     router.push(query ? `/filter/${encodeURIComponent(query)}` : '/filter');
 };
-
+onMounted(authorizedBool)
 </script>
 
 
