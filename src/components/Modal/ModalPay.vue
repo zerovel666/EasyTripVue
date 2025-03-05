@@ -94,11 +94,7 @@ const email = ref('');
 const full_name = ref('');
 
 watch(() => loading.active, (newVal) => {
-    if (newVal) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = '';
-    }
+    document.body.style.overflow = newVal ? 'hidden' : '';
 });
 
 watch(phone, (newValue) => {
@@ -111,11 +107,9 @@ watch(phone, (newValue) => {
 
 const formatExpiryDate = () => {
     let val = expiryDate.value.replace(/\D/g, '');
-
     if (val.length > 2) {
         val = val.slice(0, 2) + '/' + val.slice(2, 4);
     }
-
     expiryDate.value = val.slice(0, 5);
 };
 
@@ -136,40 +130,80 @@ const paymentMethods = ref([
     { name: "Halyk", img: "/src/assets/images/icon/footer/HalykBankLogo.svg" }
 ]);
 
-
 const selectPayment = (index) => {
     selectedPayment.value = index;
 };
 
-const addBooking = async () => {
-    const params = {
-        card: {
-            phone: phone.value,
-            email: email.value,
-            full_name: full_name.value,
-            type: paymentMethods.value[selectedPayment.value]['name'],
-            num_card: cardNumber.value,
-            fn_mn_card: cardHolder.value,
-            trip_name: route.params.trip_name,
-            amount: props.paramsForBuy.occupied_place * props.paramsForBuy.price_per_day * props.paramsForBuy.count_days
-        },
-        data: {
-            occupied_place: props.paramsForBuy.occupied_place,
-            check_in: props.paramsForBuy.check_in,
-            check_out: props.paramsForBuy.check_out,
-            users_iins: props.paramsForBuy.users_iins
-        }
+const validateFields = () => {
+    if (!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        notificationMessage.value = 'Введите корректный email';
+        return false;
     }
-    const response = await axios.post(`${API_URL}/payment/paid`, params);
-    if (response.status == 200) {
-        notificationMessage.value = "Успешная покупка! Вся информация отправлена на указанный email";
-        setTimeout(() => {
-            notificationMessage.value = '';
-        }, 3000);
+    if (phone.value.length < 11) {
+        notificationMessage.value = 'Введите корректный номер телефона';
+        return false;
     }
-}
+    if (!full_name.value.trim()) {
+        notificationMessage.value = 'Введите ФИО';
+        return false;
+    }
+    if (selectedPayment.value === null) {
+        notificationMessage.value = 'Выберите способ оплаты';
+        return false;
+    }
+    if (cardNumber.value.length !== 16) {
+        notificationMessage.value = 'Введите корректный номер карты';
+        return false;
+    }
+    if (!cardHolder.value.trim()) {
+        notificationMessage.value = 'Введите имя владельца карты';
+        return false;
+    }
+    if (cvv.value.length !== 3) {
+        notificationMessage.value = 'Введите корректный CVV';
+        return false;
+    }
+    if (!expiryDate.value.match(/^\d{2}\/\d{2}$/)) {
+        notificationMessage.value = 'Введите корректную дату окончания (ММ/ГГ)';
+        return false;
+    }
+    return true;
+};
 
+const addBooking = async () => {
+    if (!validateFields()) return;
+
+    try {
+        const params = {
+            card: {
+                phone: phone.value,
+                email: email.value,
+                full_name: full_name.value,
+                type: paymentMethods.value[selectedPayment.value].name,
+                num_card: cardNumber.value,
+                fn_mn_card: cardHolder.value,
+                trip_name: route.params.trip_name,
+                amount: props.paramsForBuy.occupied_place * props.paramsForBuy.price_per_day * props.paramsForBuy.count_days
+            },
+            data: {
+                occupied_place: props.paramsForBuy.occupied_place,
+                check_in: props.paramsForBuy.check_in,
+                check_out: props.paramsForBuy.check_out,
+                users_iins: props.paramsForBuy.users_iins
+            }
+        };
+
+        const response = await axios.post(`${API_URL}/payment/paid`, params);
+        if (response.status === 200) {
+            notificationMessage.value = 'Успешная покупка! Вся информация отправлена на указанный email';
+            setTimeout(() => { notificationMessage.value = ''; }, 3000);
+        }
+    } catch (error) {
+        notificationMessage.value = 'Ошибка при оплате. Попробуйте позже';
+    }
+};
 </script>
+
 
 <style scoped>
 .overlay-modal {

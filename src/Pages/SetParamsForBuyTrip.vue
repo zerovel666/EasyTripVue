@@ -8,6 +8,7 @@
     </div>
     <ModalPay v-model:showModal="showModal" v-model:paramsForBuy="paramsForBuy" />
     <Footer />
+    <Notification :message="messageNotification"/>
 </template>
 
 <script setup>
@@ -17,6 +18,7 @@ import Calendar from '@/components/BuyComponent/Calendar.vue';
 import FormBuy from '@/components/BuyComponent/FormBuy.vue';
 import ModalPay from '@/components/Modal/ModalPay.vue';
 import { ref, watch, onUnmounted } from 'vue';
+import Notification from '@/components/Layouts/Notification.vue';
 
 
 const countDays = ref(0);
@@ -24,6 +26,7 @@ const touristsData = ref([]);
 const calendarRef = ref(null);
 const paramsForBuy = ref(null);
 const showModal = ref(false);
+const messageNotification = ref('');
 
 watch(showModal, (newValue) => {
     document.body.style.overflow = newValue ? 'hidden' : '';
@@ -53,11 +56,25 @@ const handleTouristsData = (data) => {
     }
 };
 
-watch(() => paramsForBuy.value, () => {
-    if (paramsForBuy.value != null) {
-        showModal.value = true
+watch(() => paramsForBuy.value, (newVal) => {
+    if (newVal &&
+        newVal.occupied_place &&
+        newVal.count_days &&
+        newVal.price_per_day &&
+        newVal.check_in &&
+        newVal.check_out &&
+        newVal.users_iins?.length > 0
+    ) {
+        showModal.value = true;
+    } else {
+        messageNotification.value = 'Заполните все данные';
+        setTimeout(() => {
+            messageNotification.value = '';
+        },3000);
     }
-})
+});
+
+
 </script>
 
 <style scoped>
