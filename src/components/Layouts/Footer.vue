@@ -48,12 +48,11 @@
                             <p @click="goTermsUse">Условия пользования</p>
                             <p @click="goPrivacy">Политика конфиденциальности</p>
                             <p @click="goRefund">Политика возврата</p>
-                            <p>Безопасность платежей</p>
                         </div>
                         <div class="partners">
                             <h3>Партнерам</h3>
-                            <p>Стать партнером</p>
-                            <p>Правила партнерства</p>
+                            <p @click="goBecomePartner">Стать партнером</p>
+                            <p @click="goBecomePartner">Правила партнерства</p>
                         </div>
                     </div>
                     <div class="r-block">
@@ -94,6 +93,9 @@ const goRefund = () => {
     router.push('/refund')
 }
 
+const goBecomePartner = () => {
+    router.push('/becomePartner')
+}
 </script>
 
 <style scoped>
