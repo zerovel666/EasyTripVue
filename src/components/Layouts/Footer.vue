@@ -45,7 +45,7 @@
                         <div class="travelers">
                             <h3>Путешествинникам</h3>
                             <p @click="goQuestion">Частые вопросы</p>
-                            <p>Условия пользования</p>
+                            <p @click="goTermsUse">Условия пользования</p>
                             <p>Политика конфиденциальности</p>
                             <p>Политика возврата</p>
                             <p>Безопасность платежей</p>
@@ -77,9 +77,15 @@ import { useRouter } from 'vue-router';
 const hoverInstagram = ref(false);
 const hoverTelegram = ref(false);
 const router = useRouter();
+
 const goQuestion = () => {
     router.push('/question')
 }
+
+const goTermsUse = () => {
+    router.push('/termsUse')
+}
+
 </script>
 
 <style scoped>
