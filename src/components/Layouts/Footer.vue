@@ -25,9 +25,9 @@
                     <div class="bottom-l-content">
                         <div class="link-pages">
                             <h3>Полезные ссылки</h3>
-                            <p>Туры</p>
+                            <p @click="goFilter">Туры</p>
                             <p>Вакансии</p>
-                            <p>О проекте</p>
+                            <p @click="goAboutUs">О проекте</p>
                         </div>
                         <div id="legal-info">
                             <p>© 2025, EasyTrip. пр. Аль-Фараби 77/8, Алматы, Казахстан</p><br>
@@ -93,9 +93,18 @@ const goRefund = () => {
     router.push('/refund')
 }
 
+const goFilter = () => {
+    router.push('/filter')
+}
+
 const goBecomePartner = () => {
     router.push('/becomePartner')
 }
+
+const goAboutUs = () => {
+    router.push('/aboutUs');
+};
+
 </script>
 
 <style scoped>
