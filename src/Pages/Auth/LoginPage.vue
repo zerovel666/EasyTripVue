@@ -68,9 +68,7 @@ const validateEmail = () => {
 const validatePassword = () => {
     if (!password.value) {
         passwordError.value = 'Пароль не может быть пустым';
-    } else if (password.value.length < 6) {
-        passwordError.value = 'Пароль должен содержать минимум 6 символов';
-    } else {
+    }else {
         passwordError.value = '';
     }
 };
@@ -98,7 +96,11 @@ const auth = async () => {
         
         if (response.status === 200) {
             document.cookie = `userid=${response.data.user_id}`;
-            router.push('/');
+            if (response.data['role'] == 'standart'){
+                router.push('/');
+            } else if(response.data['role'] == 'admin'){
+                router.push('/admin')
+            }
         } else {
             throw new Error('Неверный логин или пароль');
         }

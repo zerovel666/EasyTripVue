@@ -19,7 +19,14 @@
                 </ul>
             </div>
             <p @click="goAboutUs">О проекте •</p>
-            <p>Меню •</p>
+            <div class="menu">
+                <p @click="toggleMenu">Меню •</p>
+                <ul v-if="showMenu" class="menu-dropdown">
+                    <li @click="goTo('/filter')">Фильтрация</li>
+                    <li @click="goTo('/profile')">Мой профиль</li>
+                    <li @click="logout">Выйти</li>
+                </ul>
+            </div>
             <p id="auth" @click="goLogin" v-if="isAuthorized">Войти</p>
         </div>
     </div>
@@ -43,6 +50,22 @@ const countries = ref([]);
 const searchQuery = ref('');
 const showDropdown = ref(false);
 const isAuthorized = ref(true);
+const showMenu = ref(false);
+
+const toggleMenu = () => {
+    showMenu.value = !showMenu.value;
+};
+
+const goTo = (path) => {
+    router.push(path);
+    showMenu.value = false;
+};
+
+const logout = () => {
+    cookies.remove('userid');
+    router.push('/login');
+    showMenu.value = false;
+};
 
 const authorizedBool = () => {
     const userId = cookies.get('userid');
@@ -242,4 +265,29 @@ onMounted(authorizedBool)
     margin-left: auto;
     color: #007b5b;
 }
+.menu-dropdown {
+    position: absolute;
+    top: 50px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    list-style: none;
+    padding: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.menu-dropdown li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.menu-dropdown li:hover {
+    background: #f5f5f5;
+}
+.menu{
+    position: relative;
+}
+
 </style>
