@@ -12,6 +12,7 @@ import axios from 'axios';
 import { API_URL } from './config'; 
 import LoginPage from './Pages/Auth/LoginPage.vue';
 import RegisterPage from './Pages/Auth/RegisterPage.vue';
+import AboutUs from './Pages/infoPages/AboutUs.vue';
 
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -47,7 +48,8 @@ const routes = [
     { path: '/filter/:trip_name?', component: Filter },
     { path: '/buy/trip/:trip_name', component: SetParamsForBuyTrip },
     { path: '/login', component: LoginPage },
-    { path: '/register', component: RegisterPage }
+    { path: '/register', component: RegisterPage },
+    { path: '/aboutUs', component: AboutUs}
 ];
 
 const router = createRouter({

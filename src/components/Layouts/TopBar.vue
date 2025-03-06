@@ -18,7 +18,7 @@
                     </li>
                 </ul>
             </div>
-            <p>О проекте •</p>
+            <p @click="goAboutUs">О проекте •</p>
             <p>Меню •</p>
             <p id="auth" @click="goLogin" v-if="isAuthorized">Войти</p>
         </div>
@@ -81,6 +81,11 @@ onBeforeUnmount(() => {
 const goHome = () => {
     router.push('/');
 };
+
+const goAboutUs = () => {
+    router.push('/aboutUs');
+};
+
 const filteredOptions = computed(() => {
     if (!searchQuery.value) return countries.value;
     return countries.value.filter(item =>
