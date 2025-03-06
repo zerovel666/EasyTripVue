@@ -47,7 +47,7 @@
                             <p @click="goQuestion">Частые вопросы</p>
                             <p @click="goTermsUse">Условия пользования</p>
                             <p @click="goPrivacy">Политика конфиденциальности</p>
-                            <p>Политика возврата</p>
+                            <p @click="goRefund">Политика возврата</p>
                             <p>Безопасность платежей</p>
                         </div>
                         <div class="partners">
@@ -88,6 +88,10 @@ const goTermsUse = () => {
 
 const goPrivacy = () => {
     router.push('/privacy')
+}
+
+const goRefund = () => {
+    router.push('/refund')
 }
 
 </script>
