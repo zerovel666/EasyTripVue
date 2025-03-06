@@ -46,7 +46,7 @@
                             <h3>Путешествинникам</h3>
                             <p @click="goQuestion">Частые вопросы</p>
                             <p @click="goTermsUse">Условия пользования</p>
-                            <p>Политика конфиденциальности</p>
+                            <p @click="goPrivacy">Политика конфиденциальности</p>
                             <p>Политика возврата</p>
                             <p>Безопасность платежей</p>
                         </div>
@@ -84,6 +84,10 @@ const goQuestion = () => {
 
 const goTermsUse = () => {
     router.push('/termsUse')
+}
+
+const goPrivacy = () => {
+    router.push('/privacy')
 }
 
 </script>
