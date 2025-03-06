@@ -18,6 +18,7 @@ import TermsUse from './Pages/infoPages/TermsUse.vue';
 import PrivacyPolicy from './Pages/infoPages/PrivacyPolicy.vue';
 import RefundPolicy from './Pages/infoPages/RefundPolicy.vue';
 import BecomePartner from './Pages/infoPages/BecomePartner.vue';
+import Admin from './Pages/Admin.vue';
 
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -59,7 +60,8 @@ const routes = [
     { path: '/termsUse', component: TermsUse },
     { path: '/privacy', component: PrivacyPolicy },
     { path: '/refund', component: RefundPolicy },
-    { path: '/becomePartner', component: BecomePartner }
+    { path: '/becomePartner', component: BecomePartner },
+    { path: '/admin', component: Admin}
 ];
 
 const router = createRouter({

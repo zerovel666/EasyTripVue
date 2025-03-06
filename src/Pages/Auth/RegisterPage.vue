@@ -82,8 +82,8 @@ onMounted(() => {
         showText.value = false;
         setTimeout(() => {
             showLogin.value = true;
-        }, 0);
-    }, 1);
+        }, 1000);
+    }, 2000);
 });
 
 const toggleRole = (role) => {

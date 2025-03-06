@@ -51,8 +51,8 @@ onMounted(() => {
         showText.value = false;
         setTimeout(() => {
             showLogin.value = true;
-        }, 0);
-    }, 1);
+        }, 1000);
+    }, 2000);
 });
 
 const validateEmail = () => {
@@ -96,6 +96,7 @@ const auth = async () => {
         
         if (response.status === 200) {
             document.cookie = `userid=${response.data.user_id}`;
+            document.cookie = `role=${response.data.role}`
             if (response.data['role'] == 'standart'){
                 router.push('/');
             } else if(response.data['role'] == 'admin'){
