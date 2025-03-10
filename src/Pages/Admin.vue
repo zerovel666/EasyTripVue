@@ -4,7 +4,9 @@
         <div class="panel">
             <h1>Таблицы</h1>
             <div class="tables">
-                <button v-for="(table, index) in tables" :key="index" @click="getColumnTable(table)">{{ table}}</button>
+                <button v-for="(table, index) in tables" :key="index" @click="getColumnTable(table)">
+                    {{ table }}
+                </button>
             </div>
         </div>
         <div class="tableSection">
@@ -12,7 +14,6 @@
                 <div class="input-content dropdown-wrapper">
                     <input type="text" placeholder="Выберите тур для просмотра брони" v-model="searchQuery"
                         @focus="showDropdown = true" @click="searchQuery = ''" />
-
                     <ul v-if="showDropdown" class="dropdown">
                         <li v-for="option in filteredOptions" :key="option.id" @click="selectOption(option)">
                             {{ option.trip_name }} ({{ option.country_name }})
@@ -27,18 +28,36 @@
                             {{ column }}
                         </div>
                     </div>
-                    <div class="rows" v-for="(rows, index) in dataRowColumn" :key="index">
+                    <div class="rows" v-for="(rows, index) in dataRowColumn" :key="index"
+                        :style="{ backgroundColor: selectedIndex === rows.id ? '#efefef' : '' }"
+                        @click="selectRow(rows)">
                         <div class="rowColumn" v-for="(rowColumn, i) in rows" :key="i">
                             {{ rowColumn }}
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="actionOptions">
+                <button>Добавить</button>
+                <button @click="fillInputs">Изменить</button>
+                <button @click="deleteSeleted">Удалить</button>
+            </div>
+            <div class="input-section">
+                <template v-for="(column, index) in columns" :key="index">
+                    <label v-if="column === 'image_path'" class="custom-file-label">
+                        <span>{{ selectedFileName || "Выбрать файл" }}</span>
+                        <input type="file" @change="handleFileUpload">
+                    </label>
+                    <input v-model="selectedRowData[column]" :type="column === 'active' ? 'checkbox' : 'text'"
+                        :placeholder="column"
+                        :disabled="['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id','user_id'].includes(column)"
+                        :style="{ backgroundColor: ['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id','user_id'].includes(column) ? '#e6e6e6' : '' }" />
 
+                </template>
+            </div>
         </div>
     </div>
 </template>
-
 
 <script setup>
 import { API_URL } from '@/config';
@@ -54,7 +73,11 @@ const selectedTable = ref('');
 const countries = ref([]);
 const showDropdown = ref(false);
 const searchQuery = ref("");
-const dataRowColumn = ref("")
+const dataRowColumn = ref("");
+const selectedIndex = ref(null);
+const selectedFileName = ref("");
+const selectedRowData = ref({});
+const selectedFile = ref('');
 
 const checkRole = () => {
     const role = Cookies.get('role');
@@ -63,6 +86,64 @@ const checkRole = () => {
         router.push('/login');
     }
 };
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        selectedRowData.value.image_path = file;
+        selectedFileName.value = file.name;
+        selectedFile.value = file;
+    }
+};
+
+
+
+const selectRow = (row) => {
+    selectedIndex.value = row.id;
+    selectedRowData.value = { ...row };
+};
+
+const fillInputs = async () => {
+    if (!selectedIndex.value || !selectedTable.value) return;
+
+    selectedFileName.value = "";
+    const tables = {
+        Booking: 'booking',
+        Country: 'country'
+    };
+    if (!tables[selectedTable.value]) {
+        console.error("Выбранная таблица не найдена");
+        return;
+    }
+
+    const url = `${API_URL}/admin/${tables[selectedTable.value]}/update/${selectedRowData.value.id}`;
+
+    const formData = new FormData();
+    Object.keys(selectedRowData.value).forEach((key) => {
+        formData.append(key, selectedRowData.value[key]);
+    });
+
+    if (selectedFile.value) {
+        formData.append("image_path", selectedFile.value);
+    }
+
+    try {
+        const response = await axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        if (selectedTable.value === 'Booking') {
+            getDataColumnForTripName(searchQuery.value);
+        } else if (selectedTable.value === 'Country') {
+            getDataColumn();
+        }
+        console.log("Успешно обновлено:", response.data);
+    } catch (error) {
+        console.error("Ошибка при обновлении:", error);
+    }
+};
+
+
+
 
 const getTable = async () => {
     try {
@@ -99,7 +180,6 @@ onBeforeUnmount(() => {
     document.removeEventListener('click', closeDropdown);
 });
 
-
 const closeDropdown = (event) => {
     if (!event.target.closest('.dropdown-wrapper')) {
         showDropdown.value = false;
@@ -112,9 +192,8 @@ const getDataColumnForTripName = async (tripName) => {
         Country: 'country'
     };
     const response = await axios.get(`${API_URL}/${tables[selectedTable.value]}/${tripName}`);
-
     dataRowColumn.value = response.data;
-}
+};
 
 const getDataColumn = async () => {
     const tables = {
@@ -122,9 +201,8 @@ const getDataColumn = async () => {
         Country: 'country'
     };
     const response = await axios.get(`${API_URL}/admin/${tables[selectedTable.value]}/data`);
-
     dataRowColumn.value = response.data;
-}
+};
 
 const getColumnTable = async (table) => {
     selectedTable.value = table;
@@ -133,14 +211,33 @@ const getColumnTable = async (table) => {
         Country: 'country'
     };
     dataRowColumn.value = '';
+    selectedRowData.value = {};
     if (table == 'Booking') {
         getCountries();
-    } else if(table = 'Country'){
+    } else if (table = 'Country') {
         getDataColumn();
     }
-
     const response = await axios.get(`${API_URL}/admin/${tables[table]}/column`);
-    columns.value = response.data
+    columns.value = response.data;
+};
+
+const deleteSeleted = async () => {
+    if (!selectedIndex.value) return;
+    const tables = {
+        Booking: 'booking',
+        Country: 'country'
+    };
+
+    const response = await axios.delete(`${API_URL}/admin/${tables[selectedTable.value]}/${selectedIndex.value}`);
+    if (response.status === 200) {
+        if(selectedTable.value === 'Booking') {
+            getDataColumnForTripName(searchQuery.value);
+        } else if (selectedTable.value === 'Country') {
+            getDataColumn();
+        }
+        selectedRowData.value = {};
+        selectedIndex.value = null;
+    }
 };
 
 const selectOption = (option) => {
@@ -157,6 +254,7 @@ onMounted(() => {
     });
 });
 </script>
+
 
 <style scoped>
 .content {
@@ -300,8 +398,7 @@ onMounted(() => {
 }
 
 .tableData {
-    max-width: 900px;
-    max-height: 500px;
+    max-height: 300px;
     border: 1px solid black;
     height: 100%;
     margin-bottom: 20px;
@@ -329,13 +426,18 @@ onMounted(() => {
     width: 160px;
     text-align: center;
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid #898989;
 
 }
 
 .rows {
     display: flex;
     width: max-content;
+    cursor: pointer;
+}
+
+.rows:hover {
+    background-color: #efefef;
 }
 
 .rowColumn {
@@ -345,12 +447,70 @@ onMounted(() => {
     justify-content: center;
     text-align: center;
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid #898989;
     font-size: 13px;
     overflow: hidden;
 }
 
+.actionOptions {
+    display: flex;
+    gap: 50px;
+    justify-content: space-between;
+}
 
+.actionOptions button {
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #02BF8C;
+    color: white;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+
+}
+
+.actionOptions button:hover {
+    transform: scale(1.1);
+    background-color: #008e68;
+}
+
+.input-section {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 50px;
+}
+
+.input-section input,
+.custom-file-label {
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #898989;
+    outline: none;
+    padding-left: 10px;
+    font-size: 18px;
+}
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #02BF8C;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    text-align: center;
+}
+
+.custom-file-label:hover {
+    background-color: #008561;
+}
+
+.custom-file-label input {
+    display: none;
+}
 
 /* 
     WEB KITS
@@ -374,7 +534,7 @@ onMounted(() => {
 }
 
 .scrollContainer::-webkit-scrollbar {
-    width: 8px;
+    width: 5px;
     height: 3px;
 }
 
@@ -391,7 +551,7 @@ onMounted(() => {
 }
 
 .dropdown::-webkit-scrollbar {
-    width: 6px;
+    width: 2px;
 }
 
 .dropdown::-webkit-scrollbar-thumb {
