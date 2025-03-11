@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="actionOptions" v-if="selectedTable">
-                <button @click="openCreateEditor" v-if="selectedTable !== 'Booking'">Добавить</button>
+                <button @click="openCreateEditor" v-if="!['Booking', 'Users'].includes(selectedTable)">Добавить</button>
                 <button @click="fillInputs">Изменить</button>
                 <button @click="deleteSeleted">Удалить</button>
             </div>
@@ -50,25 +50,16 @@
                     </label>
                     <input v-model="selectedRowData[column]" :type="column === 'active' ? 'checkbox' : 'text'"
                         :placeholder="column"
-                        :disabled="['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id','user_id'].includes(column)"
-                        :style="{ backgroundColor: ['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id','user_id'].includes(column) ? '#e6e6e6' : '' }" />
+                        :disabled="['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id', 'user_id'].includes(column)"
+                        :style="{ backgroundColor: ['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id', 'user_id'].includes(column) ? '#e6e6e6' : '' }" />
 
                 </template>
             </div>
         </div>
     </div>
     <Notification :message="notificationMessage" />
-    <CreateEditorCountry 
-        :showModal="showCountryEditorModal" 
-        @update:showModal="showCountryEditorModal = $event" 
-    />
+    <CreateEditorCountry :showModal="showCountryEditorModal" @update:showModal="showCountryEditorModal = $event" />
 
-    <CreateEditorBooking 
-        :showModal="showBookingEditorModal" 
-        @update:showModal="showBookingEditorModal = $event" 
-    />
-
-    
 </template>
 
 <script setup>
@@ -79,7 +70,6 @@ import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
 import Notification from '@/components/Layouts/Notification.vue';
 import CreateEditorCountry from '@/components/AdminLayouts/CreateEditorCountry.vue';
-import CreateEditorBooking from '@/components/AdminLayouts/CreateEditorBooking.vue';
 
 const router = useRouter();
 const tables = ref([]);
@@ -95,7 +85,7 @@ const selectedRowData = ref({});
 const selectedFile = ref('');
 const notificationMessage = ref('');
 const showCountryEditorModal = ref(false);
-const showBookingEditorModal = ref(false);
+const showUserEditorModal = ref(false);
 const checkRole = () => {
     const role = Cookies.get('role');
     if (!role || role !== 'admin') {
@@ -116,7 +106,8 @@ const handleFileUpload = (event) => {
 const openCreateEditor = async () => {
     const tables = {
         Booking: 'booking',
-        Country: 'country'
+        Country: 'country',
+        Users: 'users'
     };
     if (!selectedTable.value) {
         notificationMessage.value = "Выберите таблицу для создания";
@@ -124,8 +115,8 @@ const openCreateEditor = async () => {
             notificationMessage.value = "";
         }, 3000);
         return;
-    } else if (tables[selectedTable.value] === 'booking') { 
-        showBookingEditorModal.value = true;
+    } else if (tables[selectedTable.value] === 'booking') {
+        showUserEditorModal.value = true;
     } else if (tables[selectedTable.value] === 'country') {
         showCountryEditorModal.value = true;
     }
@@ -142,7 +133,8 @@ const fillInputs = async () => {
     selectedFileName.value = "";
     const tables = {
         Booking: 'booking',
-        Country: 'country'
+        Country: 'country',
+        Users: 'users'
     };
     if (!tables[selectedTable.value]) {
         console.error("Выбранная таблица не найдена");
@@ -166,7 +158,7 @@ const fillInputs = async () => {
         });
         if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
-        } else if (selectedTable.value === 'Country') {
+        } else if (selectedTable.value === 'Country', 'Users') {
             getDataColumn();
         }
         console.log("Успешно обновлено:", response.data);
@@ -184,6 +176,11 @@ const getTable = async () => {
         tables.value = response.data['data'];
     } catch (error) {
         console.error('Ошибка при загрузке таблиц:', error);
+        notificationMessage.value = "Ошибка авторизации";
+        setTimeout(() => {
+            notificationMessage.value = "";
+        }, 2000);
+        router.push('/login');
     }
 };
 
@@ -222,7 +219,8 @@ const closeDropdown = (event) => {
 const getDataColumnForTripName = async (tripName) => {
     const tables = {
         Booking: 'booking',
-        Country: 'country'
+        Country: 'country',
+        Users: 'users'
     };
     const response = await axios.get(`${API_URL}/${tables[selectedTable.value]}/${tripName}`);
     dataRowColumn.value = response.data;
@@ -231,7 +229,8 @@ const getDataColumnForTripName = async (tripName) => {
 const getDataColumn = async () => {
     const tables = {
         Booking: 'booking',
-        Country: 'country'
+        Country: 'country',
+        Users: 'users'
     };
     const response = await axios.get(`${API_URL}/admin/${tables[selectedTable.value]}/data`);
     dataRowColumn.value = response.data;
@@ -239,15 +238,19 @@ const getDataColumn = async () => {
 
 const getColumnTable = async (table) => {
     selectedTable.value = table;
+    console.log(selectedTable.value);
     const tables = {
         Booking: 'booking',
-        Country: 'country'
+        Country: 'country',
+        Users: 'users'
     };
     dataRowColumn.value = '';
     selectedRowData.value = {};
     if (table == 'Booking') {
         getCountries();
-    } else if (table = 'Country') {
+    } else if (table == 'Country') {
+        getDataColumn();
+    } else if (table == 'Users') {
         getDataColumn();
     }
     const response = await axios.get(`${API_URL}/admin/${tables[table]}/column`);
@@ -258,14 +261,15 @@ const deleteSeleted = async () => {
     if (!selectedIndex.value) return;
     const tables = {
         Booking: 'booking',
-        Country: 'country'
+        Country: 'country',
+        Users: 'users'
     };
 
     const response = await axios.delete(`${API_URL}/admin/${tables[selectedTable.value]}/${selectedIndex.value}`);
     if (response.status === 200) {
-        if(selectedTable.value === 'Booking') {
+        if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
-        } else if (selectedTable.value === 'Country') {
+        } else if (selectedTable.value === 'Country', 'Users') {
             getDataColumn();
         }
         selectedRowData.value = {};
@@ -525,6 +529,7 @@ onMounted(() => {
     padding-left: 10px;
     font-size: 18px;
 }
+
 .custom-file-label {
     display: flex;
     align-items: center;
