@@ -25,13 +25,20 @@
             </div>
         </div>
     </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
+    <Notification :message="notificationMessage" />
 </template>
 
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { defineProps, defineEmits, onMounted, ref, computed } from 'vue';
+import { defineProps, defineEmits, onMounted, ref, watch, inject } from 'vue';
+import Notification from '../Layouts/Notification.vue';
 
+const loading = inject('loading');
+const notificationMessage = ref('');
 const inputData = ref([]);
 const formData = ref({
     country: {
@@ -46,6 +53,14 @@ const showDropdown = ref(false);
 
 defineProps({
     showModal: Boolean
+});
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
 });
 
 const getColumnOrRelation = async () => {
@@ -97,8 +112,23 @@ const submitForm = async () => {
         const response = await axios.post(`${API_URL}/admin/country/create`, form, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-        console.log("Ответ сервера:", response.data);
-        closeModal();
+        if (response.status === 200) {
+            notificationMessage.value = 'Тур успешно создан, обновите таблицу';
+            setTimeout(() => {
+                notificationMessage.value = '';
+            }, 3000);
+            closeModal();
+        } else if (response.status === 400) {
+            notificationMessage.value = response.data.message;
+            setTimeout(() => {
+                notificationMessage.value = '';
+            }, 3000);
+        } else if (response.status === 500) {
+            notificationMessage.value = response.data.message;
+            setTimeout(() => {
+                notificationMessage.value = '';
+            }, 3000);
+        }
     } catch (error) {
         console.error("Ошибка при отправке:", error);
     }

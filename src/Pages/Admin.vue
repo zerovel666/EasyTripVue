@@ -59,20 +59,22 @@
     <Notification :message="notificationMessage" />
     <CreateEditorCountry :showModal="showCountryEditorModal" @update:showModal="showCountryEditorModal = $event" />
     <CreateEditorTags :showModal="showTagsEditorModal" @update:showModal="showTagsEditorModal = $event" />
-
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
 </template>
 
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
 import Notification from '@/components/Layouts/Notification.vue';
 import CreateEditorCountry from '@/components/AdminLayouts/CreateEditorCountry.vue';
 import CreateEditorTags from '@/components/AdminLayouts/CreateEditorTags.vue';
 
-
+const loading = inject('loading');
 const router = useRouter();
 const tables = ref([]);
 const columns = ref([]);
@@ -166,12 +168,22 @@ const fillInputs = async () => {
         const response = await axios.post(url, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
+        if (response.status === 200) {
+            notificationMessage.value = "Данные успешно обновлены";
+            setTimeout(() => {
+                notificationMessage.value = "";
+            }, 2000);
+        } else {
+            notificationMessage.value = "Ошибка при обновлении";
+            setTimeout(() => {
+                notificationMessage.value = "";
+            }, 2000);
+        }
         if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
         } else if (selectedTable.value === 'Country', 'Users','DescriptionCountry','ImageCountry','Tags') {
             getDataColumn();
         }
-        console.log("Успешно обновлено:", response.data);
     } catch (error) {
         console.error("Ошибка при обновлении:", error);
     }
@@ -218,6 +230,15 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', closeDropdown);
+});
+
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
 });
 
 const closeDropdown = (event) => {
@@ -293,6 +314,11 @@ const deleteSeleted = async () => {
         }
         selectedRowData.value = {};
         selectedIndex.value = null;
+    } else {
+        notificationMessage.value = "Ошибка при удалении";
+        setTimeout(() => {
+            notificationMessage.value = "";
+        }, 2000);
     }
 };
 

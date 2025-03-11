@@ -20,7 +20,7 @@ defineProps({
     padding: 10px 30px 10px 30px;
     border-radius: 10px;
     border: 1px solid black;
-    z-index: 1;
+    z-index: 100000;
     min-height: 50px;
     display: flex;
     justify-content: center;

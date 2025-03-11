@@ -28,18 +28,34 @@
             </div>
         </div>
     </div>
+    <div v-if="loading.active" class="loader">
+        <a-spin size="large" />
+    </div>
+    <Notification :message="notificationMessage" />
 </template>
 
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { defineProps, defineEmits, watch, ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { defineProps, defineEmits, watch, ref, computed, onMounted, onBeforeUnmount, inject } from 'vue';
+import Notification from '../Layouts/Notification.vue';
 
 const inputData = ref([]);
 const showDropdown = ref(false);
 const countries = ref([]);
 const formData = ref({}); 
 const searchQuery = ref('');
+const loading = inject('loading');
+const notificationMessage = ref('');
+
+
+watch(() => loading.active, (newVal) => {
+    if (newVal) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+});
 
 const props = defineProps({
     showModal: Boolean
@@ -52,7 +68,6 @@ const getAllColumnsOrRelations = async () => {
         const response = await axios.get(`${API_URL}/admin/tags/download`);
         inputData.value = response.data;
 
-        // Инициализируем formData
         for (const key in response.data) {
             response.data[key].forEach(field => {
                 formData.value[field] = '';
@@ -90,9 +105,26 @@ const sendNewTag = async () => {
     }
 
     try {
-        await axios.post(`${API_URL}/admin/tags/create`, payload, {
+        const response = await axios.post(`${API_URL}/admin/tags/create`, payload, {
             headers: { 'Content-Type': 'application/json' }
         });
+        if (response.status === 200) {
+            notificationMessage.value = 'Тег успешно добавлен';
+            setTimeout(() => {
+                notificationMessage.value = '';
+                emit('update:showModal', false);
+            }, 2000);
+        } else if (response.status === 400) {
+            notificationMessage.value = response.data.message;
+            setTimeout(() => {
+                notificationMessage.value = '';
+            }, 3000);
+        } else if (response.status === 500) {
+            notificationMessage.value = response.data.message;
+            setTimeout(() => {
+                notificationMessage.value = '';
+            }, 3000);
+        }
     } catch (error) {
     }
 };
