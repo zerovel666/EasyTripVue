@@ -98,6 +98,7 @@ const submitForm = async () => {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
         console.log("Ответ сервера:", response.data);
+        closeModal();
     } catch (error) {
         console.error("Ошибка при отправке:", error);
     }

@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="actionOptions" v-if="selectedTable">
-                <button @click="openCreateEditor" v-if="!['Booking', 'Users'].includes(selectedTable)">Добавить</button>
+                <button @click="openCreateEditor" v-if="!['Booking', 'Users','DescriptionCountry','ImageCountry'].includes(selectedTable)">Добавить</button>
                 <button @click="fillInputs">Изменить</button>
                 <button @click="deleteSeleted">Удалить</button>
             </div>
@@ -52,13 +52,13 @@
                         :placeholder="column"
                         :disabled="['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id', 'user_id'].includes(column)"
                         :style="{ backgroundColor: ['id', 'created_at', 'updated_at', 'currency', 'uuid', 'country_id', 'user_id'].includes(column) ? '#e6e6e6' : '' }" />
-
                 </template>
             </div>
         </div>
     </div>
     <Notification :message="notificationMessage" />
     <CreateEditorCountry :showModal="showCountryEditorModal" @update:showModal="showCountryEditorModal = $event" />
+    <CreateEditorTags :showModal="showTagsEditorModal" @update:showModal="showTagsEditorModal = $event" />
 
 </template>
 
@@ -70,6 +70,8 @@ import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
 import Notification from '@/components/Layouts/Notification.vue';
 import CreateEditorCountry from '@/components/AdminLayouts/CreateEditorCountry.vue';
+import CreateEditorTags from '@/components/AdminLayouts/CreateEditorTags.vue';
+
 
 const router = useRouter();
 const tables = ref([]);
@@ -85,7 +87,8 @@ const selectedRowData = ref({});
 const selectedFile = ref('');
 const notificationMessage = ref('');
 const showCountryEditorModal = ref(false);
-const showUserEditorModal = ref(false);
+const showTagsEditorModal = ref(false);
+
 const checkRole = () => {
     const role = Cookies.get('role');
     if (!role || role !== 'admin') {
@@ -107,7 +110,10 @@ const openCreateEditor = async () => {
     const tables = {
         Booking: 'booking',
         Country: 'country',
-        Users: 'users'
+        Users: 'users',
+        DescriptionCountry: 'descriptionCountry',
+        ImageCountry: 'imageCountry',
+        Tags: 'tags'
     };
     if (!selectedTable.value) {
         notificationMessage.value = "Выберите таблицу для создания";
@@ -115,10 +121,11 @@ const openCreateEditor = async () => {
             notificationMessage.value = "";
         }, 3000);
         return;
-    } else if (tables[selectedTable.value] === 'booking') {
-        showUserEditorModal.value = true;
-    } else if (tables[selectedTable.value] === 'country') {
+} else if (tables[selectedTable.value] === 'country') {
+        console.log(123);
         showCountryEditorModal.value = true;
+    } else if (tables[selectedTable.value] === 'tags') {
+        showTagsEditorModal.value = true;
     }
 }
 
@@ -134,7 +141,10 @@ const fillInputs = async () => {
     const tables = {
         Booking: 'booking',
         Country: 'country',
-        Users: 'users'
+        Users: 'users',
+        DescriptionCountry: 'descriptionCountry',
+        ImageCountry: 'imageCountry',
+        Tags: 'tags'
     };
     if (!tables[selectedTable.value]) {
         console.error("Выбранная таблица не найдена");
@@ -158,7 +168,7 @@ const fillInputs = async () => {
         });
         if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
-        } else if (selectedTable.value === 'Country', 'Users') {
+        } else if (selectedTable.value === 'Country', 'Users','DescriptionCountry','ImageCountry','Tags') {
             getDataColumn();
         }
         console.log("Успешно обновлено:", response.data);
@@ -220,7 +230,10 @@ const getDataColumnForTripName = async (tripName) => {
     const tables = {
         Booking: 'booking',
         Country: 'country',
-        Users: 'users'
+        Users: 'users',
+        DescriptionCountry: 'descriptionCountry',
+        ImageCountry: 'imageCountry',
+        Tags: 'tags'
     };
     const response = await axios.get(`${API_URL}/${tables[selectedTable.value]}/${tripName}`);
     dataRowColumn.value = response.data;
@@ -230,7 +243,10 @@ const getDataColumn = async () => {
     const tables = {
         Booking: 'booking',
         Country: 'country',
-        Users: 'users'
+        Users: 'users',
+        DescriptionCountry: 'descriptionCountry',
+        ImageCountry: 'imageCountry',
+        Tags: 'tags'
     };
     const response = await axios.get(`${API_URL}/admin/${tables[selectedTable.value]}/data`);
     dataRowColumn.value = response.data;
@@ -238,19 +254,19 @@ const getDataColumn = async () => {
 
 const getColumnTable = async (table) => {
     selectedTable.value = table;
-    console.log(selectedTable.value);
     const tables = {
         Booking: 'booking',
         Country: 'country',
-        Users: 'users'
+        Users: 'users',
+        DescriptionCountry: 'descriptionCountry',
+        ImageCountry: 'imageCountry',
+        Tags: 'tags'
     };
     dataRowColumn.value = '';
     selectedRowData.value = {};
     if (table == 'Booking') {
         getCountries();
-    } else if (table == 'Country') {
-        getDataColumn();
-    } else if (table == 'Users') {
+    } else if (['Country', 'Users','DescriptionCountry','ImageCountry','Tags'].includes(table)) {
         getDataColumn();
     }
     const response = await axios.get(`${API_URL}/admin/${tables[table]}/column`);
@@ -262,14 +278,17 @@ const deleteSeleted = async () => {
     const tables = {
         Booking: 'booking',
         Country: 'country',
-        Users: 'users'
+        Users: 'users',
+        DescriptionCountry: 'descriptionCountry',
+        ImageCountry: 'imageCountry',
+        Tags: 'tags'
     };
 
     const response = await axios.delete(`${API_URL}/admin/${tables[selectedTable.value]}/${selectedIndex.value}`);
     if (response.status === 200) {
         if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
-        } else if (selectedTable.value === 'Country', 'Users') {
+        } else if (selectedTable.value === 'Country', 'Users','DescriptionCountry','ImageCountry','Tags') {
             getDataColumn();
         }
         selectedRowData.value = {};
