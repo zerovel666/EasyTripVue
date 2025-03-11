@@ -30,7 +30,7 @@
 <script setup>
 import { API_URL } from '@/config';
 import axios from 'axios';
-import { defineProps, defineEmits, onMounted, ref } from 'vue';
+import { defineProps, defineEmits, onMounted, ref, computed } from 'vue';
 
 const inputData = ref([]);
 const formData = ref({
@@ -54,6 +54,54 @@ const getColumnOrRelation = async () => {
     formData.value = Object.fromEntries(Object.keys(response.data).map(key => [key, {}]));
 };
 
+const handleFileUpload = (event, parent, field) => {
+    const file = event.target.files[0];
+    if (file) {
+        formData.value[parent][field] = file;
+        formData.value[parent][`${field}_name`] = file.name;
+    }
+};
+
+const submitForm = async () => {
+    const form = new FormData();
+
+    const fileCountry = formData.value.country.image_path;
+    if (fileCountry instanceof File) {
+        form.append("image_path", fileCountry, fileCountry.name);
+    } else {
+        console.error("Файл country отсутствует или неверного типа");
+        return;
+    }
+
+    const fileImageCountry = formData.value.image_country.image_path;
+    if (fileImageCountry instanceof File) {
+        form.append("image_path_country", fileImageCountry, fileImageCountry.name);
+    } else {
+        console.error("Файл image_country отсутствует или неверного типа");
+        return;
+    }
+
+    Object.entries(formData.value).forEach(([key, value]) => {
+        Object.entries(value).forEach(([subKey, subValue]) => {
+            if (subKey !== "image_path") {
+                if (subKey === "active") {
+                    form.append(`${key}[${subKey}]`, subValue ? "1" : "0");
+                } else {
+                    form.append(`${key}[${subKey}]`, subValue);
+                }
+            }
+        });
+    });
+
+    try {
+        const response = await axios.post(`${API_URL}/admin/country/create`, form, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        console.log("Ответ сервера:", response.data);
+    } catch (error) {
+        console.error("Ошибка при отправке:", error);
+    }
+};
 
 
 const emit = defineEmits(['update:showModal']);
