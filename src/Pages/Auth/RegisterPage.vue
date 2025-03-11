@@ -144,7 +144,7 @@ const auth = async () => {
             iin: iin.value,
             full_name: fullName.value,
             role: admin.value ? 'admin' : 'standart',
-            adminKey: admin.value ? adminKey.value : null
+            key: admin.value ? adminKey.value : null
         };
 
         const response = await axios.post(`${API_URL}/user/register`, params);

@@ -37,8 +37,8 @@
                     </div>
                 </div>
             </div>
-            <div class="actionOptions">
-                <button>Добавить</button>
+            <div class="actionOptions" v-if="selectedTable">
+                <button @click="openCreateEditor" v-if="selectedTable !== 'Booking'">Добавить</button>
                 <button @click="fillInputs">Изменить</button>
                 <button @click="deleteSeleted">Удалить</button>
             </div>
@@ -57,6 +57,18 @@
             </div>
         </div>
     </div>
+    <Notification :message="notificationMessage" />
+    <CreateEditorCountry 
+        :showModal="showCountryEditorModal" 
+        @update:showModal="showCountryEditorModal = $event" 
+    />
+
+    <CreateEditorBooking 
+        :showModal="showBookingEditorModal" 
+        @update:showModal="showBookingEditorModal = $event" 
+    />
+
+    
 </template>
 
 <script setup>
@@ -65,6 +77,9 @@ import axios from 'axios';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
+import Notification from '@/components/Layouts/Notification.vue';
+import CreateEditorCountry from '@/components/AdminLayouts/CreateEditorCountry.vue';
+import CreateEditorBooking from '@/components/AdminLayouts/CreateEditorBooking.vue';
 
 const router = useRouter();
 const tables = ref([]);
@@ -78,7 +93,9 @@ const selectedIndex = ref(null);
 const selectedFileName = ref("");
 const selectedRowData = ref({});
 const selectedFile = ref('');
-
+const notificationMessage = ref('');
+const showCountryEditorModal = ref(false);
+const showBookingEditorModal = ref(false);
 const checkRole = () => {
     const role = Cookies.get('role');
     if (!role || role !== 'admin') {
@@ -96,7 +113,23 @@ const handleFileUpload = (event) => {
     }
 };
 
-
+const openCreateEditor = async () => {
+    const tables = {
+        Booking: 'booking',
+        Country: 'country'
+    };
+    if (!selectedTable.value) {
+        notificationMessage.value = "Выберите таблицу для создания";
+        setTimeout(() => {
+            notificationMessage.value = "";
+        }, 3000);
+        return;
+    } else if (tables[selectedTable.value] === 'booking') { 
+        showBookingEditorModal.value = true;
+    } else if (tables[selectedTable.value] === 'country') {
+        showCountryEditorModal.value = true;
+    }
+}
 
 const selectRow = (row) => {
     selectedIndex.value = row.id;
