@@ -15,7 +15,6 @@
             <p>Страна : {{ trip.country_name }}</p>
             <p>Город : {{ trip.city_name }}</p>
             <p>Цена за день и человека: {{ trip.price_per_day }} {{ trip.currency }}</p>
-            <p>Свободных мест : {{ countFreePlace }}</p>
             <div class="card">
                 <p>Количество туристов: {{ touristsCount }}</p>
                 <p>Количество дней: {{ countDays }}</p>
@@ -45,7 +44,6 @@ const tourists = ref([]);
 const trip = ref({});
 const amount = ref(null);
 const notificationMessage = ref('');
-const countFreePlace = ref(null);
 const touristsCount = computed(() => tourists.value.length);
 
 const props = defineProps({
@@ -66,7 +64,6 @@ watch(() => loading.active, (newVal) => {
 const getTrip = async () => {
     const response = await axios.get(`${API_URL}/country/${route.params.trip_name}`);
     trip.value = response.data;
-    countFreePlace.value = trip.value.count_place - trip.value.occupied;
 };
 
 watch(() => props.countDays, () => {
@@ -82,13 +79,6 @@ watch(() => tourists.value.length, () => {
 });
 
 const addTourist = () => {
-    if (tourists.value.length >= countFreePlace.value) {
-        notificationMessage.value = "Превышено количество свободных мест";
-        setTimeout(() => {
-            notificationMessage.value = '';
-        }, 3000);
-        return;
-    }
     tourists.value.push('');
 };
 
@@ -115,7 +105,6 @@ const checkAndProceedToPayment = () => {
     const params = {
         amountDay: trip.value.price_per_day,
         tourists: tourists.value,
-        occupiedPlace: touristsCount,
     }
     emit('updateTouristsData', params);
 };

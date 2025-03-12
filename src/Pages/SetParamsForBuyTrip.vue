@@ -61,7 +61,6 @@ watch(() => paramsForBuy.value, (newVal) => {
     const userId = cookies.get('userid');
     if (userId) {
         if (newVal &&
-            newVal.occupied_place &&
             newVal.count_days &&
             newVal.price_per_day &&
             newVal.check_in &&

@@ -38,7 +38,8 @@
                 </div>
             </div>
             <div class="actionOptions" v-if="selectedTable">
-                <button @click="openCreateEditor" v-if="!['Booking', 'Users','DescriptionCountry','ImageCountry'].includes(selectedTable)">Добавить</button>
+                <button @click="openCreateEditor"
+                    v-if="!['Booking', 'Users', 'DescriptionCountry', 'ImageCountry'].includes(selectedTable)">Добавить</button>
                 <button @click="fillInputs">Изменить</button>
                 <button @click="deleteSeleted">Удалить</button>
             </div>
@@ -123,7 +124,7 @@ const openCreateEditor = async () => {
             notificationMessage.value = "";
         }, 3000);
         return;
-} else if (tables[selectedTable.value] === 'country') {
+    } else if (tables[selectedTable.value] === 'country') {
         console.log(123);
         showCountryEditorModal.value = true;
     } else if (tables[selectedTable.value] === 'tags') {
@@ -181,7 +182,7 @@ const fillInputs = async () => {
         }
         if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
-        } else if (selectedTable.value === 'Country', 'Users','DescriptionCountry','ImageCountry','Tags') {
+        } else if (selectedTable.value === 'Country', 'Users', 'DescriptionCountry', 'ImageCountry', 'Tags') {
             getDataColumn();
         }
     } catch (error) {
@@ -287,7 +288,7 @@ const getColumnTable = async (table) => {
     selectedRowData.value = {};
     if (table == 'Booking') {
         getCountries();
-    } else if (['Country', 'Users','DescriptionCountry','ImageCountry','Tags'].includes(table)) {
+    } else if (['Country', 'Users', 'DescriptionCountry', 'ImageCountry', 'Tags'].includes(table)) {
         getDataColumn();
     }
     const response = await axios.get(`${API_URL}/admin/${tables[table]}/column`);
@@ -309,7 +310,7 @@ const deleteSeleted = async () => {
     if (response.status === 200) {
         if (selectedTable.value === 'Booking') {
             getDataColumnForTripName(searchQuery.value);
-        } else if (selectedTable.value === 'Country', 'Users','DescriptionCountry','ImageCountry','Tags') {
+        } else if (selectedTable.value === 'Country', 'Users', 'DescriptionCountry', 'ImageCountry', 'Tags') {
             getDataColumn();
         }
         selectedRowData.value = {};
@@ -349,7 +350,7 @@ onMounted(() => {
 }
 
 .panel {
-    background-color: #02Bf8c;
+    background-color: #02BF8C;
     max-width: 30%;
     width: 100%;
     padding: 40px;

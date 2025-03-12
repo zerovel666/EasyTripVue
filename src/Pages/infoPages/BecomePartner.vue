@@ -66,7 +66,7 @@ const contactManager = () => {
 }
 
 .become-partner__button {
-    background: #02Bf8c;
+    background: #02BF8C;
     color: white;
     padding: 10px;
     border: none;

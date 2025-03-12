@@ -19,6 +19,7 @@ import PrivacyPolicy from './Pages/infoPages/PrivacyPolicy.vue';
 import RefundPolicy from './Pages/infoPages/RefundPolicy.vue';
 import BecomePartner from './Pages/infoPages/BecomePartner.vue';
 import Admin from './Pages/Admin.vue';
+import Profile from './Pages/Profile.vue';
 
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -61,7 +62,8 @@ const routes = [
     { path: '/privacy', component: PrivacyPolicy },
     { path: '/refund', component: RefundPolicy },
     { path: '/becomePartner', component: BecomePartner },
-    { path: '/admin', component: Admin}
+    { path: '/admin', component: Admin},
+    { path: '/profile', component: Profile}
 ];
 
 const router = createRouter({

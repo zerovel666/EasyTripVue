@@ -11,7 +11,6 @@
         </div>
         <div class="calendar">
             <span v-for="day in paddedDays" :key="day.date" :class="{
-                'occupied': day.isOccupied,
                 'selected': isSelected(day.date),
                 'in-range': isInRange(day.date),
                 'last-selected': isLastSelected(day.date),

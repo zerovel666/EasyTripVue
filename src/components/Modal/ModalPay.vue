@@ -53,8 +53,8 @@
                         <h3>Оплата</h3>
                     </div>
                     <div class="policy">
-                        <button @click="addBooking">К оплате {{ paramsForBuy.occupied_place * paramsForBuy.price_per_day
-                            * paramsForBuy.count_days }} KZT</button>
+                        <button @click="addBooking">К оплате {{ paramsForBuy.price_per_day
+                            * paramsForBuy.count_days * paramsForBuy.users_iins.length}} KZT</button>
                         <p>Проводя оплату вы принимаете нашу политику конфиденциальности и условия сервиса<br>
                             © От 2025, EasyTrip, Halyk, Kaspi, Visa, MasterCard</p>
                     </div>
@@ -183,10 +183,9 @@ const addBooking = async () => {
                 num_card: cardNumber.value,
                 fn_mn_card: cardHolder.value,
                 trip_name: route.params.trip_name,
-                amount: props.paramsForBuy.occupied_place * props.paramsForBuy.price_per_day * props.paramsForBuy.count_days
+                amount: props.paramsForBuy.price_per_day * props.paramsForBuy.count_days
             },
             data: {
-                occupied_place: props.paramsForBuy.occupied_place,
                 check_in: props.paramsForBuy.check_in,
                 check_out: props.paramsForBuy.check_out,
                 users_iins: props.paramsForBuy.users_iins
