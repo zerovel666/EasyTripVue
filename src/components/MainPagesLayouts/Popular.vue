@@ -198,9 +198,11 @@ p {
     cursor: pointer;
     transition: transform 0.3s ease;
     cursor: pointer;
+    margin-bottom: 10px;
 }
 
 #buttonCont button:hover {
     transform: scale(1.05);
 }
+
 </style>
