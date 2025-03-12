@@ -11,7 +11,7 @@
                                 <input type="file" @change="handleFileUpload($event, index, item)" />
                             </label>
 
-                            <input v-else-if="item === 'active'" type="checkbox" v-model="formData[index][item]" />
+                            <input v-else-if="item === 'active'" type="checkbox" v-model="formData[index][item]" disabled/>
 
                             <input v-else type="text" :placeholder="item"
                                 :disabled="['id', 'created_at', 'updated_at','country_id'].includes(item)"
@@ -85,14 +85,6 @@ const submitForm = async () => {
         form.append("image_path", fileCountry, fileCountry.name);
     } else {
         console.error("Файл country отсутствует или неверного типа");
-        return;
-    }
-
-    const fileImageCountry = formData.value.image_country.image_path;
-    if (fileImageCountry instanceof File) {
-        form.append("image_path_country", fileImageCountry, fileImageCountry.name);
-    } else {
-        console.error("Файл image_country отсутствует или неверного типа");
         return;
     }
 

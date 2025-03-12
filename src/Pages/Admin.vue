@@ -39,7 +39,7 @@
             </div>
             <div class="actionOptions" v-if="selectedTable">
                 <button @click="openCreateEditor"
-                    v-if="!['Booking', 'Users', 'DescriptionCountry', 'ImageCountry'].includes(selectedTable)">Добавить</button>
+                    v-if="!['Booking', 'Users', 'DescriptionCountry'].includes(selectedTable)">Добавить</button>
                 <button @click="fillInputs">Изменить</button>
                 <button @click="deleteSeleted">Удалить</button>
             </div>
@@ -60,6 +60,7 @@
     <Notification :message="notificationMessage" />
     <CreateEditorCountry :showModal="showCountryEditorModal" @update:showModal="showCountryEditorModal = $event" />
     <CreateEditorTags :showModal="showTagsEditorModal" @update:showModal="showTagsEditorModal = $event" />
+    <CreateEditorImageCountry :showModal="showImageCountryEditorModal" @update:showModal="showImageCountryEditorModal = $event" />
     <div v-if="loading.active" class="loader">
         <a-spin size="large" />
     </div>
@@ -74,6 +75,7 @@ import Cookies from 'js-cookie';
 import Notification from '@/components/Layouts/Notification.vue';
 import CreateEditorCountry from '@/components/AdminLayouts/CreateEditorCountry.vue';
 import CreateEditorTags from '@/components/AdminLayouts/CreateEditorTags.vue';
+import CreateEditorImageCountry from '@/components/AdminLayouts/CreateEditorImageCountry.vue';
 
 const loading = inject('loading');
 const router = useRouter();
@@ -91,6 +93,7 @@ const selectedFile = ref('');
 const notificationMessage = ref('');
 const showCountryEditorModal = ref(false);
 const showTagsEditorModal = ref(false);
+const showImageCountryEditorModal = ref(false)
 
 const checkRole = () => {
     const role = Cookies.get('role');
@@ -129,6 +132,8 @@ const openCreateEditor = async () => {
         showCountryEditorModal.value = true;
     } else if (tables[selectedTable.value] === 'tags') {
         showTagsEditorModal.value = true;
+    } else if (tables[selectedTable.value] === 'imageCountry'){
+        showImageCountryEditorModal.value = true;
     }
 }
 
@@ -335,6 +340,12 @@ onMounted(() => {
     window.addEventListener("scroll", () => {
         document.querySelector(".bg-parallax").style.transform = `translateY(${window.scrollY * 0.5}px)`;
     });
+});
+
+watch([showCountryEditorModal, showTagsEditorModal, showImageCountryEditorModal], (newValues) => {
+    if (newValues.includes(false)) {
+        getDataColumn();
+    }
 });
 </script>
 

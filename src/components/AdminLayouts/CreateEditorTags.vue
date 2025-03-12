@@ -11,7 +11,8 @@
                                     <input type="text" placeholder="Выберите тур" v-model="formData[item]"
                                         @focus="showDropdown = true" @click="formData[item] = ''" />
                                     <ul v-if="showDropdown" class="dropdown">
-                                        <li v-for="option in filteredOptions" :key="option.id" @click="selectOption(option)">
+                                        <li v-for="option in filteredOptions" :key="option.id"
+                                            @click="selectOption(option)">
                                             {{ option.trip_name }} ({{ option.country_name }})
                                         </li>
                                     </ul>
@@ -19,8 +20,7 @@
                             </div>
                             <input v-else type="text" v-model="formData[item]" :placeholder="item" class="inputs"
                                 :disabled="['id', 'created_at', 'updated_at'].includes(item)"
-                                :style="{ backgroundColor: ['id', 'created_at', 'updated_at'].includes(item) ? '#e6e6e6' : '' }"
-                            />
+                                :style="{ backgroundColor: ['id', 'created_at', 'updated_at'].includes(item) ? '#e6e6e6' : '' }" />
                         </template>
                     </div>
                 </div>
@@ -43,7 +43,7 @@ import Notification from '../Layouts/Notification.vue';
 const inputData = ref([]);
 const showDropdown = ref(false);
 const countries = ref([]);
-const formData = ref({}); 
+const formData = ref({});
 const searchQuery = ref('');
 const loading = inject('loading');
 const notificationMessage = ref('');
@@ -93,41 +93,45 @@ const getCountries = async () => {
 };
 
 const sendNewTag = async () => {
-    const payload = {};
-
-    for (const key in formData.value) {
-        if (key === 'country_id') {
-            const selectedCountry = countries.value.find(item => item.trip_name === formData.value[key]);
-            payload[key] = selectedCountry ? selectedCountry.id : null;
-        } else {
-            payload[key] = formData.value[key];
-        }
-    }
-
     try {
+        const payload = {};
+
+        for (const key in formData.value) {
+            if (key === 'country_id') {
+                const selectedCountry = countries.value.find(item => item.trip_name === formData.value[key]);
+                payload[key] = selectedCountry ? selectedCountry.id : null;
+            } else {
+                payload[key] = formData.value[key];
+            }
+        }
+
         const response = await axios.post(`${API_URL}/admin/tags/create`, payload, {
             headers: { 'Content-Type': 'application/json' }
         });
-        if (response.status === 200) {
+
+        console.log("Response:", response);
+
+        if (response.status === 201) {
             notificationMessage.value = 'Тег успешно добавлен';
-            setTimeout(() => {
-                notificationMessage.value = '';
-                emit('update:showModal', false);
-            }, 2000);
-        } else if (response.status === 400) {
-            notificationMessage.value = response.data.message;
-            setTimeout(() => {
-                notificationMessage.value = '';
-            }, 3000);
-        } else if (response.status === 500) {
-            notificationMessage.value = response.data.message;
-            setTimeout(() => {
-                notificationMessage.value = '';
-            }, 3000);
+        } else {
+            notificationMessage.value = response.data.message || 'Неизвестная ошибка';
         }
     } catch (error) {
+        console.error("Ошибка отправки запроса:", error);
+
+        if (error.response) {
+            notificationMessage.value = error.response.data?.message || `Ошибка: ${error.response.status}`;
+        } else {
+            notificationMessage.value = 'Ошибка соединения с сервером';
+        }
     }
+
+    setTimeout(() => {
+        notificationMessage.value = '';
+        emit('update:showModal', false);
+    }, 1000);
 };
+
 
 const filteredOptions = computed(() => {
     if (!searchQuery.value) return countries.value;
@@ -189,9 +193,10 @@ watch(() => props.showModal, (newVal) => {
     z-index: 1000;
     overflow-y: auto;
 }
-.input-section{
+
+.input-section {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
@@ -205,7 +210,8 @@ watch(() => props.showModal, (newVal) => {
     position: relative;
 }
 
-.input-content input,.inputs {
+.input-content input,
+.inputs {
     width: 100%;
     height: 35px;
     border-radius: 5px;
@@ -264,12 +270,14 @@ watch(() => props.showModal, (newVal) => {
 .dropdown li:hover {
     background: #f5f5f5;
 }
-.input-container{
+
+.input-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-.input-container button{
+
+.input-container button {
     width: 100%;
     height: 40px;
     border-radius: 10px;

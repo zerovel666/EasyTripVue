@@ -132,7 +132,7 @@ h2 {
 .card-info {
     position: absolute;
     bottom: -100%;
-    height: 100px;
+    height: auto;
     width: 100%;
     left: 0;
     background: rgba(0, 0, 0, 0.7);
@@ -140,10 +140,13 @@ h2 {
     padding: 10px;
     transition: bottom 0.3s ease-in-out;
     cursor: pointer;
+    overflow-y: hidden;
+    padding-top: 20px;
 }
 
 p {
-    margin: 10px;
+    margin: 0px 10px 10px 10px;
+    text-align: left;
 }
 
 .card:hover .card-info {
@@ -160,8 +163,11 @@ p {
     justify-content: space-between;
     align-items: center;
     text-align: center;
+    margin-bottom: 20px;
 }
-
+.head_card_item p{
+    margin-top: 10px;
+}
 .rating {
     display: flex;
     justify-content: center;
