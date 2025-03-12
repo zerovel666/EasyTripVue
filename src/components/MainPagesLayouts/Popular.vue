@@ -133,6 +133,7 @@ h2 {
     position: absolute;
     bottom: -100%;
     height: 100px;
+    width: 100%;
     left: 0;
     background: rgba(0, 0, 0, 0.7);
     color: white;

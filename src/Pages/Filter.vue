@@ -388,7 +388,7 @@ const scrollToTop = () => {
 }
 
 .tags {
-    margin: 0;
+    margin-bottom: 10px;
 }
 
 .scrollable-text {
