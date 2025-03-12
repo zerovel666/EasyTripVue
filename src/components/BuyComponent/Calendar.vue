@@ -14,10 +14,12 @@
                 'selected': isSelected(day.date),
                 'in-range': isInRange(day.date),
                 'last-selected': isLastSelected(day.date),
-                'current': day.isToday
+                'current': day.isToday,
+                'occupied': day.isOccupied  
             }" @click="selectDate(day)">
                 {{ day.display }}
             </span>
+
         </div>
     </div>
     <div v-if="loading.active" class="loader">
