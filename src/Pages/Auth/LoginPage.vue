@@ -16,7 +16,6 @@
                 <button @click="auth" :disabled="loading.active">Войти</button>
                 <p @click="goMain">Войти как гость</p>
                 <p @click="goRegister">Регистрация</p>
-                <p id="refresh">Забыли пароль?</p>
             </div>
         </transition>
         
